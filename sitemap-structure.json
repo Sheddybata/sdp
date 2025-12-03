@@ -1,0 +1,437 @@
+{
+  "siteName": "SDP Website",
+  "description": "Social Democratic Party - High-Level Sitemap Structure",
+  "version": "1.0",
+  "pages": [
+    {
+      "id": "homepage",
+      "path": "/",
+      "title": "Homepage - The Action Center",
+      "purpose": "Main landing page serving as primary engagement hub",
+      "sections": [
+        {
+          "name": "Hero Section",
+          "components": [
+            "Video Background (Prince Adebayo/Youth)",
+            "Headline: 'The Alternative is Here. Good Governance for Nigeria.'",
+            "Primary CTA: 'Join the Party' (Red Button)",
+            "Secondary CTA: 'Donate N500' (Green Button)"
+          ]
+        },
+        {
+          "name": "Shadow Gov Tracker Widget",
+          "components": [
+            "Live Stats Bar: Current Inflation Rate vs. SDP Target Rate",
+            "Real-time economic indicators"
+          ]
+        },
+        {
+          "name": "Latest Wins",
+          "layout": "3-column grid",
+          "components": [
+            "Senator Wadada Moves Motion for X",
+            "SDP Nasarawa distributes fertilizer",
+            "Party Chairman visits IDP camp"
+          ]
+        },
+        {
+          "name": "Why SDP? Block",
+          "layout": "Icon-based",
+          "components": [
+            "Social Justice",
+            "True Federalism",
+            "Youth Inclusion"
+          ]
+        },
+        {
+          "name": "Footer Pre-Emptive",
+          "components": [
+            "'Find your Ward Chairman' search bar"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "who-we-are",
+      "path": "/who-we-are",
+      "title": "Who We Are - Party Structure & History",
+      "purpose": "Establish legitimacy, trust, and transparency",
+      "sections": [
+        {
+          "name": "History Timeline",
+          "components": [
+            "Interactive timeline: M.K.O. Abiola (1993) → Prince Adebayo (2025)",
+            "Key milestones and events"
+          ]
+        },
+        {
+          "name": "Leadership Structure",
+          "subsections": [
+            {
+              "name": "NWC (National Working Committee)",
+              "components": [
+                "Chairman profile (Prince Adebayo)",
+                "Secretary profile",
+                "Other key NWC members",
+                "Photos, bios, contact information"
+              ]
+            },
+            {
+              "name": "Senate Caucus",
+              "components": [
+                "Senator Wadada profile",
+                "Senator Akwashiki profile",
+                "Legislative achievements links"
+              ]
+            },
+            {
+              "name": "Board of Trustees",
+              "components": [
+                "Elder members photos",
+                "Brief profiles",
+                "Experience highlights"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Constitution",
+          "components": [
+            "Downloadable PDF",
+            "Interactive preview option"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "our-stand",
+      "path": "/our-stand",
+      "title": "Our Stand - The Shadow Government Dashboard",
+      "purpose": "Present policy positions and solutions",
+      "sections": [
+        {
+          "name": "Manifesto 2.0",
+          "layout": "Interactive tabs",
+          "tabs": [
+            "Economy",
+            "Security",
+            "Education",
+            "Agro-Allied",
+            "Healthcare",
+            "Infrastructure"
+          ],
+          "example": {
+            "tab": "Economy",
+            "content": "Our plan to stabilize the Naira in 18 months"
+          }
+        },
+        {
+          "name": "Solution Room",
+          "type": "Whitepaper library",
+          "components": [
+            "The SDP Plan for Fuel Subsidy Removal",
+            "Agricultural Revolution Roadmap",
+            "Education Reform Framework",
+            "Security Architecture Proposal"
+          ],
+          "features": [
+            "Downloadable PDFs",
+            "Executive summaries",
+            "Search and filter functionality"
+          ]
+        },
+        {
+          "name": "Policy Comparisons",
+          "components": [
+            "SDP positions vs. Current Government positions",
+            "Visual comparison charts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "e-membership",
+      "path": "/e-membership",
+      "title": "E-Membership - The Verified Portal",
+      "purpose": "Digital membership registration and management",
+      "sections": [
+        {
+          "name": "Registration Wizard",
+          "steps": [
+            {
+              "step": 1,
+              "name": "Basic Info",
+              "fields": [
+                "Name (First, Last)",
+                "Phone Number",
+                "Email Address",
+                "Date of Birth"
+              ]
+            },
+            {
+              "step": 2,
+              "name": "Location",
+              "fields": [
+                "State (dropdown)",
+                "LGA (dynamic based on state)",
+                "Ward (dynamic based on LGA)"
+              ],
+              "purpose": "Crucial for Grassroots Grid"
+            },
+            {
+              "step": 3,
+              "name": "Upload ID",
+              "fields": [
+                "NIN (National Identification Number)",
+                "PVC (Permanent Voters Card) upload",
+                "Image validation"
+              ]
+            },
+            {
+              "step": 4,
+              "name": "Payment",
+              "fields": [
+                "N100 card fee",
+                "Paystack integration",
+                "Payment confirmation"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Member Dashboard",
+          "path": "/e-membership/dashboard",
+          "access": "Protected route",
+          "components": [
+            "Digital ID Card (Downloadable PNG with QR Code)",
+            "Member number display",
+            "Referral System (Invite 5 friends → Party Agent Badge)",
+            "Referral tracking dashboard",
+            "Exclusive content access",
+            "Event invitations",
+            "Volunteer opportunities",
+            "Profile management"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "election-center",
+      "path": "/election-center",
+      "title": "Election Center - The 2027 Engine",
+      "purpose": "Candidate discovery and electoral engagement",
+      "sections": [
+        {
+          "name": "Candidate Finder",
+          "path": "/election-center/candidates",
+          "components": [
+            "Search interface: Select State dropdown",
+            "Select Office dropdown (Presidential, Gubernatorial, etc.)",
+            "Candidate profile display",
+            "Action buttons: 'Volunteer for [Candidate]', 'Donate to [Candidate]', 'Share Campaign'"
+          ]
+        },
+        {
+          "name": "Polling Unit Locator",
+          "path": "/election-center/polling-units",
+          "components": [
+            "INEC data integration (if available)",
+            "Interactive map of SDP Party Agents",
+            "Search by location",
+            "Contact information for polling unit agents"
+          ]
+        },
+        {
+          "name": "Grassroots Map",
+          "components": [
+            "Visual representation of SDP presence",
+            "State-by-state breakdown",
+            "Ward-level coverage indicators"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "media-room",
+      "path": "/media-room",
+      "title": "Media Room - The Truth Hub",
+      "purpose": "Information dissemination and citizen engagement",
+      "sections": [
+        {
+          "name": "Press Releases",
+          "components": [
+            "Official statements from National Publicity Secretary",
+            "Chronological listing (newest first)",
+            "Filter by category/topic",
+            "Download as PDF option",
+            "Social sharing buttons"
+          ]
+        },
+        {
+          "name": "SDP TV",
+          "components": [
+            "YouTube API feed integration",
+            "Prince Adebayo's interviews and speeches",
+            "Party events and rallies",
+            "Categorized video library",
+            "Embed and play functionality"
+          ]
+        },
+        {
+          "name": "News Section",
+          "components": [
+            "Latest party news",
+            "Media coverage highlights",
+            "Opinion pieces",
+            "Photo galleries"
+          ]
+        },
+        {
+          "name": "Whistleblower Portal",
+          "path": "/media-room/whistleblower",
+          "components": [
+            "Headline: 'See Something? Say Something.'",
+            "Anonymous text field (rich text editor)",
+            "Image upload (multiple files)",
+            "File upload (documents)",
+            "Category selection",
+            "Privacy promise: 'Your identity is encrypted and never shared'",
+            "Submission confirmation with reference number"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "path": "/contact",
+      "title": "Contact - National & State Offices",
+      "purpose": "Accessibility and local connection",
+      "sections": [
+        {
+          "name": "National Secretariat",
+          "components": [
+            "Full address in Abuja",
+            "Google Map embed",
+            "Contact phone numbers",
+            "Email addresses",
+            "Office hours"
+          ]
+        },
+        {
+          "name": "State Chapter Directory",
+          "components": [
+            "List of all 36 States",
+            "State Chairman name",
+            "Phone number",
+            "Email address",
+            "Office address",
+            "LGA coverage",
+            "Searchable/filterable table"
+          ]
+        },
+        {
+          "name": "Regional Offices",
+          "components": [
+            "Zonal coordination offices",
+            "Special purpose offices"
+          ]
+        },
+        {
+          "name": "WhatsApp Direct",
+          "type": "Floating button",
+          "scope": "All pages",
+          "components": [
+            "Opens chat with 'SDP Help Desk'",
+            "Quick access for inquiries"
+          ]
+        },
+        {
+          "name": "Contact Form",
+          "components": [
+            "General inquiry form",
+            "Category selection (Membership, Media, Partnership, etc.)",
+            "File upload capability"
+          ]
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "header": [
+      "Home",
+      "Who We Are",
+      "Our Stand",
+      "E-Membership",
+      "Election Center",
+      "Media Room",
+      "Contact"
+    ],
+    "footer": {
+      "quickLinks": "All main pages",
+      "legal": [
+        "Privacy Policy",
+        "Terms of Service"
+      ],
+      "resources": [
+        "Downloads",
+        "FAQs"
+      ],
+      "social": "Social Media Links",
+      "newsletter": "Newsletter Signup"
+    }
+  },
+  "technicalRequirements": {
+    "authentication": {
+      "method": "JWT or session-based",
+      "protectedRoutes": ["/e-membership/dashboard"],
+      "roles": ["Member", "Party Agent", "Admin"]
+    },
+    "integrations": [
+      {
+        "service": "Paystack",
+        "purpose": "Payment processing"
+      },
+      {
+        "service": "YouTube API",
+        "purpose": "Video feeds"
+      },
+      {
+        "service": "Google Maps API",
+        "purpose": "Location services"
+      },
+      {
+        "service": "INEC API",
+        "purpose": "Polling unit data (if available)"
+      },
+      {
+        "service": "Email Service",
+        "purpose": "Notifications"
+      }
+    ],
+    "databaseSchema": [
+      "User/Member profiles",
+      "Candidate information",
+      "Press releases",
+      "Whistleblower submissions (encrypted)",
+      "Event calendar",
+      "Contact directory"
+    ]
+  },
+  "designPrinciples": {
+    "accessibility": "WCAG 2.1 AA compliance",
+    "mobileResponsiveness": "Mobile-first design",
+    "userExperience": [
+      "Clear CTA placement",
+      "Fast page load times",
+      "Intuitive navigation",
+      "Progressive disclosure",
+      "Visual hierarchy"
+    ],
+    "brandIdentity": {
+      "colors": "Red, Green, Blue palette",
+      "imagery": "Professional, Nigerian context",
+      "tone": "Youth-focused design language"
+    }
+  }
+}
+

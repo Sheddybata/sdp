@@ -1,0 +1,193 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    SDP WEBSITE - VISUAL SITEMAP                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+                                    ┌─────────┐
+                                    │   HOME  │
+                                    │    (/)  │
+                                    └────┬────┘
+                                         │
+                    ┌────────────────────┼────────────────────┐
+                    │                    │                    │
+                    ▼                    ▼                    ▼
+            ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+            │ Who We Are   │    │ Our Stand    │    │ E-Membership │
+            │ /who-we-are  │    │ /our-stand   │    │ /e-membership│
+            └──────────────┘    └──────────────┘    └───────┬──────┘
+                                                              │
+                                                              ▼
+                                                      ┌──────────────┐
+                                                      │  Dashboard   │
+                                                      │  (Protected) │
+                                                      └──────────────┘
+                    ┌────────────────────┼────────────────────┐
+                    │                    │                    │
+                    ▼                    ▼                    ▼
+        ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+        │ Election Center  │  │   Media Room     │  │    Contact       │
+        │/election-center  │  │  /media-room     │  │   /contact       │
+        └────────┬─────────┘  └────────┬─────────┘  └──────────────────┘
+                 │                     │
+                 ├─────────────────────┤
+                 │                     │
+                 ▼                     ▼
+        ┌──────────────────┐  ┌──────────────────┐
+        │   Candidates     │  │  Whistleblower   │
+        │  /candidates     │  │  /whistleblower  │
+        └──────────────────┘  └──────────────────┘
+                 │
+                 ▼
+        ┌──────────────────┐
+        │ Polling Units    │
+        │ /polling-units   │
+        └──────────────────┘
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                           PAGE COMPONENT BREAKDOWN                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. HOMEPAGE (/) - "The Action Center"                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │ HERO SECTION                                                        │     │
+│  │ • Video Background (Prince Adebayo/Youth)                          │     │
+│  │ • Headline: "The Alternative is Here..."                           │     │
+│  │ • CTA: "Join the Party" (Red) | "Donate N500" (Green)             │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │ SHADOW GOV TRACKER WIDGET                                          │     │
+│  │ • Live Inflation Rate vs. SDP Target                               │     │
+│  │ • Economic Indicators Dashboard                                    │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │ LATEST WINS (3-Column Grid)                                        │     │
+│  │ ┌──────────────┐ ┌──────────────┐ ┌──────────────┐               │     │
+│  │ │ Senator Wadada│ │ SDP Nasarawa │ │ Party        │               │     │
+│  │ │ Motion        │ │ Fertilizer   │ │ Chairman IDP │               │     │
+│  │ └──────────────┘ └──────────────┘ └──────────────┘               │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │ WHY SDP? BLOCK (Icon-Based)                                        │     │
+│  │ • Social Justice | True Federalism | Youth Inclusion              │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │ FOOTER: "Find your Ward Chairman" Search                           │     │
+│  └────────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 2. WHO WE ARE (/who-we-are) - "Party Structure & History"                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • HISTORY TIMELINE: M.K.O. Abiola (1993) → Prince Adebayo (2025)          │
+│  • LEADERSHIP STRUCTURE:                                                    │
+│    - NWC (National Working Committee)                                       │
+│    - Senate Caucus (Senator Wadada, Senator Akwashiki)                      │
+│    - Board of Trustees                                                      │
+│  • CONSTITUTION: Downloadable PDF                                           │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 3. OUR STAND (/our-stand) - "Shadow Government Dashboard"                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • MANIFESTO 2.0 (Interactive Tabs):                                         │
+│    [Economy] [Security] [Education] [Agro-Allied]                            │
+│                                                                              │
+│  • SOLUTION ROOM:                                                            │
+│    - "SDP Plan for Fuel Subsidy Removal"                                     │
+│    - Other Whitepapers Library                                               │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 4. E-MEMBERSHIP (/e-membership) - "Verified Portal"                          │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  REGISTRATION WIZARD (4 Steps):                                              │
+│  Step 1: Basic Info (Name, Phone)                                           │
+│  Step 2: Location (State → LGA → Ward)                                      │
+│  Step 3: Upload ID (NIN/PVC)                                                │
+│  Step 4: Payment (N100 via Paystack)                                        │
+│                                                                              │
+│  MEMBER DASHBOARD (Protected):                                               │
+│  • Digital ID Card (QR Code)                                                 │
+│  • Referral Link ("Invite 5 friends → Party Agent Badge")                   │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 5. ELECTION CENTER (/election-center) - "The 2027 Engine"                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • CANDIDATE FINDER:                                                         │
+│    [Select State ▼] [Select Office ▼] → Profile Display                      │
+│    → "Volunteer" | "Donate" Buttons                                         │
+│                                                                              │
+│  • POLLING UNIT LOCATOR:                                                     │
+│    INEC Data Integration / Map of SDP Agents                                 │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 6. MEDIA ROOM (/media-room) - "The Truth Hub"                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • PRESS RELEASES: Official statements                                       │
+│  • SDP TV: YouTube API feed (Prince Adebayo interviews)                      │
+│  • NEWS: Latest party news                                                   │
+│  • WHISTLEBLOWER PORTAL:                                                     │
+│    "See Something? Say Something."                                           │
+│    [Anonymous Form + Image Upload]                                           │
+│    "Your identity is encrypted"                                              │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 7. CONTACT (/contact) - "National & State Offices"                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • NATIONAL SECRETARIAT: Address + Google Map                                │
+│  • STATE CHAPTER DIRECTORY: All 36 States + Contacts                         │
+│  • WHATSAPP DIRECT: Floating button (SDP Help Desk)                          │
+│                                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                         QUICK REFERENCE GUIDE                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+PAGE                    PURPOSE                          KEY FEATURES
+─────────────────────────────────────────────────────────────────────────────
+/                       Action Center                    Hero, Shadow Gov Tracker, Latest Wins
+/who-we-are            Legitimacy & Trust               History, Leadership, Constitution
+/our-stand             Policy Dashboard                  Manifesto 2.0, Solution Room
+/e-membership          Member Portal                     Registration, Digital ID, Referrals
+/election-center       Candidate Discovery               Candidate Finder, Polling Units
+/media-room            Information Hub                   Press, SDP TV, Whistleblower
+/contact               Accessibility                     National/State Offices, WhatsApp
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                          NAVIGATION HIERARCHY                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+HEADER NAVIGATION:
+  Home | Who We Are | Our Stand | E-Membership | Election Center | Media Room | Contact
+
+FOOTER NAVIGATION:
+  Quick Links | Legal | Resources | Social Media | Newsletter
+
+FLOATING ELEMENTS:
+  WhatsApp Button (All Pages)
+

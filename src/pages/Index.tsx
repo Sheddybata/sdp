@@ -1,0 +1,10 @@
+
+// This file is kept for backward compatibility
+// The homepage is now handled by HomePage.tsx
+import { Navigate } from 'react-router-dom';
+
+const Index: React.FC = () => {
+  return <Navigate to="/" replace />;
+};
+
+export default Index;
