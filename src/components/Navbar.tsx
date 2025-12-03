@@ -27,26 +27,39 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
     <nav className="fixed top-0 left-0 right-0 z-50 bg-sdp-dark/95 backdrop-blur-sm shadow-lg border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          {/* Left side - Navigation Links */}
-          <div className="hidden lg:flex items-center gap-8">
-            {links.map(link => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group ${
-                  isActive(link.path) ? 'text-[#ef8636]' : ''
-                }`}
-              >
-                {link.name}
-                {isActive(link.path) && (
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636]"></span>
-                )}
-                <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-              </Link>
-            ))}
+          {/* Left side - Desktop Navigation Links / Mobile Menu Button */}
+          <div className="flex items-center gap-8">
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-8">
+              {links.map(link => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`text-sm text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group ${
+                    isActive(link.path) ? 'text-[#ef8636]' : ''
+                  }`}
+                >
+                  {link.name}
+                  {isActive(link.path) && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636]"></span>
+                  )}
+                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                </Link>
+              ))}
+            </div>
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setMobileOpen(!mobileOpen)} 
+              className="lg:hidden flex items-center gap-2 text-white px-3 py-2 hover:bg-white/10 rounded-lg transition font-medium"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              </svg>
+              <span className="text-sm font-semibold">Menu</span>
+            </button>
           </div>
           
-          {/* Right side - CTA Button */}
+          {/* Right side - Language Switcher and Donate Button */}
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
             <button 
@@ -57,14 +70,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               Donate N500
-            </button>
-            <button 
-              onClick={() => setMobileOpen(!mobileOpen)} 
-              className="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-              </svg>
             </button>
           </div>
         </div>

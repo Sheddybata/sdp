@@ -40,7 +40,7 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20">
+    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-32 md:pt-20">
       <div className="absolute inset-0">
         {/* Slideshow Background */}
         <div className="relative w-full h-full">
