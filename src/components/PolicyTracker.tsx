@@ -32,20 +32,20 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
   return (
     <Card className={`relative overflow-hidden border-2 ${borderClass} hover:shadow-xl transition-all duration-300 ${cardBgClass}`}>
-      <CardContent className="p-8">
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className={`w-16 h-16 ${iconBgClass} rounded-xl flex items-center justify-center shadow-md`}>
+      <CardContent className="p-4 md:p-8">
+        <div className="flex items-start justify-between mb-4 md:mb-6">
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className={`w-12 h-12 md:w-16 md:h-16 ${iconBgClass} rounded-xl flex items-center justify-center shadow-md flex-shrink-0`}>
               {icon}
             </div>
-            <div>
-              <p className="text-base font-bold text-gray-800 uppercase tracking-wide mb-1">{title}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-base font-bold text-gray-800 uppercase tracking-wide mb-1 break-words">{title}</p>
               {trend && (
                 <div className="flex items-center gap-2">
                   {trend === 'up' ? (
-                    <TrendingUp className={`w-4 h-4 ${textClass}`} />
+                    <TrendingUp className={`w-3 h-3 md:w-4 md:h-4 ${textClass} flex-shrink-0`} />
                   ) : (
-                    <TrendingDown className={`w-4 h-4 ${textClass}`} />
+                    <TrendingDown className={`w-3 h-3 md:w-4 md:h-4 ${textClass} flex-shrink-0`} />
                   )}
                   <span className="text-xs text-gray-600 font-medium">vs last quarter</span>
                 </div>
@@ -54,14 +54,14 @@ const MetricCard: React.FC<MetricCardProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6 mb-6">
-          <div className="bg-white/60 rounded-xl p-4 border border-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{t('tracker.current')}</p>
-            <p className={`text-4xl font-bold ${textClass} leading-none`}>{current}</p>
+        <div className="grid grid-cols-2 gap-3 md:gap-6 mb-4 md:mb-6">
+          <div className="bg-white/60 rounded-xl p-3 md:p-4 border border-gray-200">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 md:mb-2">{t('tracker.current')}</p>
+            <p className={`text-xl md:text-4xl font-bold ${textClass} leading-tight break-words`}>{current}</p>
           </div>
-          <div className="bg-white/60 rounded-xl p-4 border border-gray-200">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{t('tracker.target')}</p>
-            <p className={`text-4xl font-bold ${textClass} leading-none`}>{target}</p>
+          <div className="bg-white/60 rounded-xl p-3 md:p-4 border border-gray-200">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 md:mb-2">{t('tracker.target')}</p>
+            <p className={`text-xl md:text-4xl font-bold ${textClass} leading-tight break-words`}>{target}</p>
           </div>
         </div>
 
@@ -79,7 +79,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
               )}
             </button>
             {isExpanded && (
-              <div className="mt-4 text-sm text-gray-700 leading-relaxed animate-in slide-in-from-top-2 duration-200 bg-white/40 rounded-lg p-4">
+              <div className="mt-4 text-xs md:text-sm text-gray-700 leading-relaxed animate-in slide-in-from-top-2 duration-200 bg-white/40 rounded-lg p-3 md:p-4">
                 {solution}
               </div>
             )}
@@ -96,11 +96,11 @@ export const PolicyTracker: React.FC = () => {
   return (
     <section id="tracker" className="py-16 -mt-8 relative z-20">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 transform -translate-y-12">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-3xl font-bold text-sdp-dark mb-2">{t('tracker.title')}</h2>
-              <p className="text-gray-600">{t('tracker.subtitle')}</p>
+        <div className="bg-white rounded-2xl shadow-2xl p-4 md:p-8 border border-gray-100 transform -translate-y-12">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-xl md:text-3xl font-bold text-sdp-dark mb-2 break-words">{t('tracker.title')}</h2>
+              <p className="text-sm md:text-base text-gray-600 break-words">{t('tracker.subtitle')}</p>
             </div>
             <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-[#ef8636]/10 rounded-full border border-[#ef8636]/20">
               <span className="w-2 h-2 bg-[#ef8636] rounded-full animate-pulse"></span>
