@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -8,9 +8,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Upload, CreditCard, MapPin } from 'lucide-react';
+import { CheckCircle2, Upload, MapPin, User, Download, Eye } from 'lucide-react';
+import QRCode from 'qrcode';
+import { getStates, getLGAsByState, getWardsByLGA } from '@/data/nigeria-locations';
+
+type NigeriaWardsByState = Record<string, Record<string, string[]>>;
+type MembershipRecord = {
+  memberId: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+  dob: string;
+  joinDate: string;
+  voterRegNo: string;
+  state: string;
+  lga: string;
+  ward: string;
+  createdAt: string;
+};
 
 const EMembership: React.FC = () => {
+  const wardsJsonUrl = '/nigeria-wards.json';
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -21,30 +40,446 @@ const EMembership: React.FC = () => {
     state: '',
     lga: '',
     ward: '',
-    nin: '',
-    pvc: null as File | null
+    joinDate: new Date().toISOString().slice(0, 10),
+    voterRegNo: '',
+    memberId: '',
+    profilePhoto: null as File | null
   });
+  const [badgePreview, setBadgePreview] = useState<string | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [wardsByState, setWardsByState] = useState<NigeriaWardsByState | null>(null);
+  const [searchMemberId, setSearchMemberId] = useState('');
+  const [searchResult, setSearchResult] = useState<MembershipRecord | null>(null);
+  const [searchAttempted, setSearchAttempted] = useState(false);
 
-  const states = [
-    'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
-    'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe',
-    'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara',
-    'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau',
-    'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara'
-  ];
+  const states = getStates();
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch(wardsJsonUrl)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!isMounted) return;
+        setWardsByState(data);
+      })
+      .catch(() => {
+        // If JSON isn't present or fails to load, we fall back to the built-in generated wards.
+        if (!isMounted) return;
+        setWardsByState(null);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const normalizeKey = (value: string) => {
+    return value
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, ' ')
+      .replace(/[’']/g, "'")
+      .replace(/\s*\/\s*/g, '/')
+      .replace(/\s*-\s*/g, '-');
+  };
+  
+  // Get LGAs for selected state
+  const lgas = useMemo(() => {
+    return formData.state ? getLGAsByState(formData.state) : [];
+  }, [formData.state]);
+
+  // Get Wards for selected LGA
+  const wards = useMemo(() => {
+    if (!formData.state || !formData.lga) return [];
+
+    // Prefer the PDF-extracted ward list if available
+    const stateKey = normalizeKey(formData.state);
+    const lgaKey = normalizeKey(formData.lga);
+    const pdfWards = wardsByState?.[stateKey]?.[lgaKey];
+    if (pdfWards && pdfWards.length > 0) return pdfWards;
+
+    // Fallback to the built-in generated ward list
+    return getWardsByLGA(formData.state, formData.lga);
+  }, [formData.state, formData.lga, wardsByState]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'state') {
+      // Reset LGA and Ward when state changes
+      setFormData(prev => ({ ...prev, state: value, lga: '', ward: '' }));
+    } else if (field === 'lga') {
+      // Reset Ward when LGA changes
+      setFormData(prev => ({ ...prev, lga: value, ward: '' }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, pvc: e.target.files![0] }));
+      const file = e.target.files[0];
+      setFormData(prev => ({ ...prev, profilePhoto: file }));
     }
   };
 
+  const loadImage = (src: string, crossOrigin: string | null = null): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      if (crossOrigin) img.crossOrigin = crossOrigin;
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+      img.src = src;
+    });
+  };
+
+  const formatMonthYear = (isoDate: string) => {
+    if (!isoDate) return '';
+    const d = new Date(isoDate);
+    if (Number.isNaN(d.getTime())) return isoDate;
+    return d.toLocaleDateString(undefined, { month: 'long', year: 'numeric' }).toUpperCase();
+  };
+
+  const wrapText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    maxWidth: number,
+    lineHeight: number,
+    maxLines = 2
+  ) => {
+    const words = (text || '-').split(' ');
+    let line = '';
+    let lines = 0;
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line ? `${line} ${words[n]}` : words[n];
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > maxWidth && line) {
+        ctx.fillText(line, x, y);
+        y += lineHeight;
+        lines++;
+        line = words[n];
+        if (lines >= maxLines - 1) break;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, x, y);
+    return y + lineHeight;
+  };
+
+  const normalizeMemberId = (value: string) => value.trim().toUpperCase().replace(/\s+/g, '');
+
+  const registryKey = 'sdp_membership_registry_v1';
+  const saveToRegistry = (record: MembershipRecord) => {
+    try {
+      const raw = localStorage.getItem(registryKey);
+      const parsed: Record<string, MembershipRecord> = raw ? JSON.parse(raw) : {};
+      parsed[normalizeMemberId(record.memberId)] = record;
+      localStorage.setItem(registryKey, JSON.stringify(parsed));
+    } catch {
+      // ignore
+    }
+  };
+
+  const findInRegistry = (memberId: string): MembershipRecord | null => {
+    try {
+      const raw = localStorage.getItem(registryKey);
+      if (!raw) return null;
+      const parsed: Record<string, MembershipRecord> = JSON.parse(raw);
+      return parsed[normalizeMemberId(memberId)] || null;
+    } catch {
+      return null;
+    }
+  };
+
+  const generateBadge = async () => {
+    if (!canvasRef.current || !formData.profilePhoto) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Card size (roughly 1011x638 is 85.6mm x 53.98mm @300dpi)
+    canvas.width = 1011;
+    canvas.height = 638;
+
+    // Ensure stable member ID for this session
+    const currentMemberId = formData.memberId || `SDP-${formData.firstName.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    if (!formData.memberId) {
+      setFormData(prev => ({ ...prev, memberId: currentMemberId }));
+    }
+
+    const GREEN = '#01a85a';
+    const ORANGE = '#f48735';
+
+    const objectUrl = URL.createObjectURL(formData.profilePhoto);
+    try {
+      const qrDataUrl = await QRCode.toDataURL(currentMemberId, {
+        margin: 1,
+        width: 220,
+        color: { dark: '#111827', light: '#ffffff' }
+      });
+      const [photoImg, logoImg] = await Promise.all([
+        loadImage(objectUrl, 'anonymous'),
+        loadImage('/sdplogo.jpg', 'anonymous')
+      ]);
+      const qrImg = await loadImage(qrDataUrl, null);
+
+      // Background
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Outer border
+      ctx.strokeStyle = GREEN;
+      ctx.lineWidth = 10;
+      ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+
+      // Header
+      ctx.fillStyle = GREEN;
+      ctx.fillRect(0, 0, canvas.width, 120);
+
+      // Logo (top-left)
+      const logoW = 110;
+      const logoH = 90;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(24, 16, logoW + 16, logoH + 16);
+      ctx.drawImage(logoImg, 32, 24, logoW, logoH);
+      ctx.strokeStyle = ORANGE;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(24, 16, logoW + 16, logoH + 16);
+
+      // Party title (center)
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 42px Arial';
+      ctx.fillText('SOCIAL DEMOCRATIC PARTY', canvas.width / 2 + 80, 55);
+      ctx.font = 'bold 34px Arial';
+      ctx.fillText('SDP', canvas.width / 2 + 80, 98);
+
+      // Orange strip title
+      ctx.fillStyle = ORANGE;
+      ctx.fillRect(0, 120, canvas.width, 70);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 34px Arial';
+      ctx.fillText('DIGITAL MEMBERSHIP CARD', canvas.width / 2, 168);
+
+      // Column layout (Photo left, text middle, QR right)
+      const photoX = 60;
+      const photoY = 220;
+      const photoW = 220;
+      const photoH = 280;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(photoX - 12, photoY - 12, photoW + 24, photoH + 24);
+      ctx.strokeStyle = GREEN;
+      ctx.lineWidth = 6;
+      ctx.strokeRect(photoX - 12, photoY - 12, photoW + 24, photoH + 24);
+
+      // Cover-crop photo into the rect
+      const srcAR = photoImg.width / photoImg.height;
+      const dstAR = photoW / photoH;
+      let sx = 0, sy = 0, sw = photoImg.width, sh = photoImg.height;
+      if (srcAR > dstAR) {
+        // Wider -> crop left/right
+        sw = photoImg.height * dstAR;
+        sx = (photoImg.width - sw) / 2;
+      } else {
+        // Taller -> crop top/bottom
+        sh = photoImg.width / dstAR;
+        sy = (photoImg.height - sh) / 2;
+      }
+      ctx.drawImage(photoImg, sx, sy, sw, sh, photoX, photoY, photoW, photoH);
+
+      // QR panel (right)
+      const qrX = canvas.width - 290;
+      const qrY = 365;
+      const qrSize = 190;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(qrX - 12, qrY - 12, qrSize + 24, qrSize + 24);
+      ctx.strokeStyle = ORANGE;
+      ctx.lineWidth = 6;
+      ctx.strokeRect(qrX - 12, qrY - 12, qrSize + 24, qrSize + 24);
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+
+      // Middle text block (stacked fields like the reference: label on top, value under it)
+      const infoX = photoX + photoW + 50;
+      const infoMaxX = qrX - 50;
+      const infoW = Math.max(240, infoMaxX - infoX);
+      let y = 245;
+
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#111827';
+      ctx.font = 'bold 38px Arial';
+      y = wrapText(
+        ctx,
+        `${formData.firstName.toUpperCase()} ${formData.lastName.toUpperCase()}`,
+        infoX,
+        y,
+        infoW,
+        44,
+        2
+      );
+
+      // Membership ID inline (label + value on the same line, auto-fit to avoid overlap/cut)
+      ctx.save();
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillStyle = ORANGE;
+
+      const memberIdLabel = 'Membership ID:';
+      const labelFontSize = 24;
+      const valueFontStart = 28;
+      const valueFontMin = 18;
+      const labelToValueGapPx = 12;
+
+      ctx.font = `bold ${labelFontSize}px Arial`;
+      const memberIdLabelW = ctx.measureText(memberIdLabel).width;
+      const memberIdValueX = infoX + memberIdLabelW + labelToValueGapPx;
+      const memberIdValueW = Math.max(80, infoX + infoW - memberIdValueX);
+
+      const ellipsize = (text: string, maxWidth: number) => {
+        const ellipsis = '…';
+        if (ctx.measureText(text).width <= maxWidth) return text;
+        let t = text;
+        while (t.length > 0 && ctx.measureText(t + ellipsis).width > maxWidth) {
+          t = t.slice(0, -1);
+        }
+        return t.length ? t + ellipsis : ellipsis;
+      };
+
+      // Draw label
+      ctx.font = `bold ${labelFontSize}px Arial`;
+      ctx.fillText(memberIdLabel, infoX, y);
+
+      // Fit value to remaining width by reducing font size; fallback to ellipsis
+      let valueFontSize = valueFontStart;
+      ctx.font = `bold ${valueFontSize}px Arial`;
+      while (valueFontSize > valueFontMin && ctx.measureText(currentMemberId).width > memberIdValueW) {
+        valueFontSize -= 1;
+        ctx.font = `bold ${valueFontSize}px Arial`;
+      }
+      let memberIdToDraw = currentMemberId;
+      if (ctx.measureText(memberIdToDraw).width > memberIdValueW) {
+        memberIdToDraw = ellipsize(memberIdToDraw, memberIdValueW);
+      }
+      ctx.font = `bold ${valueFontSize}px Arial`;
+      ctx.fillText(memberIdToDraw, memberIdValueX, y);
+
+      ctx.restore();
+
+      // advance y (single-line block)
+      y += 42;
+      y += 14; // spacing before stacked fields
+
+      const colGap = 28;
+      const colW = Math.max(150, Math.floor((infoW - colGap) / 2));
+      const col1X = infoX;
+      const col2X = infoX + colW + colGap;
+
+      const labelFont = 'bold 16px Arial';
+      const valueFont = 'bold 22px Arial';
+      const labelColor = '#6b7280';
+      const valueColor = '#111827';
+      // Vertical rhythm tuning (label on top, value below, consistent gaps)
+      const labelLineHeight = 18;
+      const labelToValueGap = 6;
+      const valueLineHeight = 26;
+      const rowGap = 14;
+
+      const stackedField = (
+        x: number,
+        startY: number,
+        label: string,
+        value: string,
+        width: number,
+        maxLines = 1
+      ) => {
+        ctx.save();
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+
+        ctx.fillStyle = labelColor;
+        ctx.font = labelFont;
+        ctx.fillText(label.toUpperCase(), x, startY);
+
+        ctx.fillStyle = valueColor;
+        ctx.font = valueFont;
+        const valueY = startY + labelLineHeight + labelToValueGap;
+        const endY = wrapText(ctx, value || '-', x, valueY, width, valueLineHeight, maxLines);
+
+        ctx.restore();
+        return endY;
+      };
+
+      const stackedRow = (
+        left: { label: string; value: string; maxLines?: number } | null,
+        right: { label: string; value: string; maxLines?: number } | null
+      ) => {
+        const rowStartY = y;
+        const leftEndY = left
+          ? stackedField(col1X, rowStartY, left.label, left.value, colW, left.maxLines ?? 1)
+          : rowStartY;
+        const rightEndY = right
+          ? stackedField(col2X, rowStartY, right.label, right.value, colW, right.maxLines ?? 1)
+          : rowStartY;
+        y = Math.max(leftEndY, rightEndY) + rowGap;
+      };
+
+      // Stacked fields (ordered as requested: State → LGA → Ward → Member Since → Voter Reg No)
+      stackedRow(
+        { label: 'State', value: (formData.state || '').toUpperCase(), maxLines: 1 },
+        { label: 'Tel', value: formData.phone, maxLines: 1 }
+      );
+      stackedRow(
+        { label: 'LGA', value: (formData.lga || '').toUpperCase(), maxLines: 2 },
+        { label: 'Member Since', value: formatMonthYear(formData.joinDate), maxLines: 1 }
+      );
+      stackedRow(
+        { label: 'Ward', value: (formData.ward || '').toUpperCase(), maxLines: 2 },
+        { label: 'Voter Reg No', value: (formData.voterRegNo || '').toUpperCase(), maxLines: 2 }
+      );
+
+      // Footer stripe
+      ctx.fillStyle = GREEN;
+      ctx.fillRect(0, canvas.height - 18, canvas.width, 18);
+      ctx.fillStyle = ORANGE;
+      ctx.fillRect(0, canvas.height - 36, canvas.width, 18);
+
+      // Convert to data URL for preview
+      setBadgePreview(canvas.toDataURL('image/png'));
+
+      // Persist record for verification/search
+      saveToRegistry({
+        memberId: currentMemberId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        dob: formData.dob,
+        joinDate: formData.joinDate,
+        voterRegNo: formData.voterRegNo,
+        state: formData.state,
+        lga: formData.lga,
+        ward: formData.ward,
+        createdAt: new Date().toISOString()
+      });
+    } catch (e) {
+      alert('Failed to generate badge. Please try again.');
+    } finally {
+      URL.revokeObjectURL(objectUrl);
+    }
+  };
+
+  const downloadBadge = () => {
+    if (!badgePreview) return;
+    
+    const link = document.createElement('a');
+    link.download = `SDP-Badge-${formData.firstName}-${formData.lastName}.png`;
+    link.href = badgePreview;
+    link.click();
+  };
+
   const nextStep = () => {
-    if (step < 4) setStep(step + 1);
+    if (step < 3) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -75,8 +510,8 @@ const EMembership: React.FC = () => {
           <Card>
             <CardHeader>
               <div className="mb-4">
-                <Progress value={(step / 4) * 100} className="h-2" />
-                <p className="text-sm text-gray-600 mt-2 text-center">Step {step} of 4</p>
+                <Progress value={(step / 3) * 100} className="h-2" />
+                <p className="text-sm text-gray-600 mt-2 text-center">Step {step} of 3</p>
               </div>
               <CardTitle className="text-2xl text-center">Registration Wizard</CardTitle>
             </CardHeader>
@@ -137,6 +572,24 @@ const EMembership: React.FC = () => {
                       onChange={(e) => handleInputChange('dob', e.target.value)}
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="joinDate">Join Date *</Label>
+                    <Input
+                      id="joinDate"
+                      type="date"
+                      value={formData.joinDate}
+                      onChange={(e) => handleInputChange('joinDate', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="voterRegNo">Voter Registration Number</Label>
+                    <Input
+                      id="voterRegNo"
+                      value={formData.voterRegNo}
+                      onChange={(e) => handleInputChange('voterRegNo', e.target.value)}
+                      placeholder="Enter your voter registration number"
+                    />
+                  </div>
                   <Button onClick={nextStep} className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90">
                     Continue to Step 2
                   </Button>
@@ -166,7 +619,7 @@ const EMembership: React.FC = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  {formData.state && (
+                  {formData.state && lgas.length > 0 && (
                     <div>
                       <Label htmlFor="lga">Local Government Area (LGA) *</Label>
                       <Select value={formData.lga} onValueChange={(value) => handleInputChange('lga', value)}>
@@ -174,13 +627,14 @@ const EMembership: React.FC = () => {
                           <SelectValue placeholder="Select your LGA" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="lga1">LGA 1 (Example)</SelectItem>
-                          <SelectItem value="lga2">LGA 2 (Example)</SelectItem>
+                          {lgas.map(lga => (
+                            <SelectItem key={lga} value={lga}>{lga}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
                   )}
-                  {formData.lga && (
+                  {formData.lga && wards.length > 0 && (
                     <div>
                       <Label htmlFor="ward">Ward *</Label>
                       <Select value={formData.ward} onValueChange={(value) => handleInputChange('ward', value)}>
@@ -188,8 +642,9 @@ const EMembership: React.FC = () => {
                           <SelectValue placeholder="Select your ward" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="ward1">Ward 1 (Example)</SelectItem>
-                          <SelectItem value="ward2">Ward 2 (Example)</SelectItem>
+                          {wards.map(ward => (
+                            <SelectItem key={ward} value={ward}>{ward}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -199,88 +654,157 @@ const EMembership: React.FC = () => {
                       Back
                     </Button>
                     <Button onClick={nextStep} className="flex-1 bg-[#ef8636] hover:bg-[#ef8636]/90" disabled={!formData.ward}>
-                      Continue to Step 3
+                      Continue to Photo & Badge
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* Step 3: Upload ID */}
+              {/* Step 3: Profile Photo & Digital Badge */}
               {step === 3 && (
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 mb-6">
-                    <Upload className="w-6 h-6 text-[#ef8636]" />
-                    <h3 className="text-xl font-bold">Step 3: Upload ID</h3>
+                    <User className="w-6 h-6 text-[#ef8636]" />
+                    <h3 className="text-xl font-bold">Step 3: Profile Photo & Digital Badge</h3>
                   </div>
+                  
+                  {/* Profile Photo Upload */}
                   <div>
-                    <Label htmlFor="nin">National Identification Number (NIN) *</Label>
-                    <Input
-                      id="nin"
-                      value={formData.nin}
-                      onChange={(e) => handleInputChange('nin', e.target.value)}
-                      placeholder="Enter your 11-digit NIN"
-                      maxLength={11}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="pvc">Permanent Voters Card (PVC) *</Label>
+                    <Label htmlFor="profilePhoto">Profile Photo *</Label>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-sm text-gray-600 mb-2">
-                        {formData.pvc ? formData.pvc.name : 'Upload your PVC image'}
-                      </p>
+                      {formData.profilePhoto ? (
+                        <div className="space-y-4">
+                          <img 
+                            src={URL.createObjectURL(formData.profilePhoto)} 
+                            alt="Profile preview" 
+                            className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-[#1daa62]"
+                          />
+                          <p className="text-sm text-gray-600">{formData.profilePhoto.name}</p>
+                        </div>
+                      ) : (
+                        <>
+                          <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                          <p className="text-sm text-gray-600 mb-2">Upload your profile photo</p>
+                        </>
+                      )}
                       <Input
-                        id="pvc"
+                        id="profilePhoto"
                         type="file"
                         accept="image/*"
                         onChange={handleFileUpload}
                         className="hidden"
                       />
-                      <Label htmlFor="pvc">
+                      <Label htmlFor="profilePhoto">
                         <Button type="button" variant="outline" asChild>
-                          <span>Choose File</span>
+                          <span>{formData.profilePhoto ? 'Change Photo' : 'Choose File'}</span>
                         </Button>
                       </Label>
                     </div>
                   </div>
-                  <div className="flex gap-4">
-                    <Button onClick={prevStep} variant="outline" className="flex-1">
-                      Back
-                    </Button>
-                    <Button onClick={nextStep} className="flex-1 bg-[#ef8636] hover:bg-[#ef8636]/90" disabled={!formData.nin || !formData.pvc}>
-                      Continue to Step 4
-                    </Button>
-                  </div>
+
+                  {/* Badge Generation */}
+                  {formData.profilePhoto && (
+                    <div className="space-y-4">
+                      {/* Canvas must exist before badge generation */}
+                      <canvas ref={canvasRef} className="hidden" />
+                      <Button 
+                        onClick={generateBadge} 
+                        className="w-full bg-[#1daa62] hover:bg-[#1daa62]/90"
+                        disabled={!formData.firstName || !formData.lastName || !formData.state || !formData.lga || !formData.ward || !formData.joinDate}
+                      >
+                        Auto-Generate Digital Badge
+                      </Button>
+
+                      {/* Badge Preview */}
+                      {badgePreview && (
+                        <Card className="bg-gradient-to-br from-[#1daa62]/10 to-[#0d7a4a]/10 border-[#1daa62]">
+                          <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                              <Eye className="w-5 h-5 text-[#1daa62]" />
+                              Badge Preview
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-4">
+                            <div className="flex justify-center">
+                              <img 
+                                src={badgePreview} 
+                                alt="Digital Badge Preview" 
+                                className="max-w-full h-auto rounded-lg shadow-lg border-4 border-white"
+                              />
+                            </div>
+                            <Button 
+                              onClick={downloadBadge} 
+                              className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90"
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              Download Badge
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  )}
+
+                  <Button onClick={prevStep} variant="outline" className="w-full">
+                    Back
+                  </Button>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
 
-              {/* Step 4: Payment */}
-              {step === 4 && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 mb-6">
-                    <CreditCard className="w-6 h-6 text-[#1daa62]" />
-                    <h3 className="text-xl font-bold">Step 4: Payment</h3>
-                  </div>
-                  <Card className="bg-[#1daa62]/10 border-[#1daa62]">
-                    <CardContent className="p-6">
-                      <div className="text-center mb-4">
-                        <p className="text-3xl font-bold text-[#1daa62]">₦100</p>
-                        <p className="text-gray-600">Card Registration Fee</p>
-                      </div>
-                      <p className="text-sm text-gray-600 text-center mb-6">
-                        Secure payment via Paystack. Your information is encrypted and secure.
-                      </p>
-                      <Button className="w-full bg-[#1daa62] hover:bg-[#1daa62]/90">
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Pay with Paystack
-                      </Button>
-                    </CardContent>
-                  </Card>
-                  <div className="flex gap-4">
-                    <Button onClick={prevStep} variant="outline" className="flex-1">
-                      Back
-                    </Button>
-                  </div>
+      {/* Verify / Search Membership */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-3xl mx-auto px-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Verify Membership</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                <div>
+                  <Label htmlFor="searchMemberId">Membership ID</Label>
+                  <Input
+                    id="searchMemberId"
+                    value={searchMemberId}
+                    onChange={(e) => setSearchMemberId(e.target.value)}
+                    placeholder="e.g. SDP-ABC-123456"
+                  />
+                </div>
+                <Button
+                  className="bg-[#01a85a] hover:bg-[#01a85a]/90"
+                  onClick={() => {
+                    setSearchAttempted(true);
+                    const found = findInRegistry(searchMemberId);
+                    setSearchResult(found);
+                  }}
+                >
+                  Search
+                </Button>
+              </div>
+
+              {searchAttempted && (
+                <div className="rounded-lg border bg-white p-4">
+                  <p className="text-sm text-gray-600">Membership ID</p>
+                  <p className="text-lg font-bold text-sdp-dark">{normalizeMemberId(searchMemberId) || '-'}</p>
+
+                  {searchResult ? (
+                    <div className="mt-4 grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
+                      <div><span className="font-semibold">Name:</span> {searchResult.firstName} {searchResult.lastName}</div>
+                      <div><span className="font-semibold">Phone:</span> {searchResult.phone}</div>
+                      <div className="sm:col-span-2"><span className="font-semibold">Voter Reg No:</span> {searchResult.voterRegNo || '-'}</div>
+                      <div><span className="font-semibold">State:</span> {searchResult.state}</div>
+                      <div><span className="font-semibold">LGA:</span> {searchResult.lga}</div>
+                      <div className="sm:col-span-2"><span className="font-semibold">Ward:</span> {searchResult.ward}</div>
+                      <div><span className="font-semibold">Member Since:</span> {formatMonthYear(searchResult.joinDate)}</div>
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-sm text-gray-600">
+                      Not found in this browser. Generate a badge at least once on this device to save a record.
+                    </p>
+                  )}
                 </div>
               )}
             </CardContent>
@@ -321,7 +845,7 @@ const EMembership: React.FC = () => {
         </div>
       </section>
 
-      <Footer />
+      <Footer showPastMembers={false} />
     </div>
   );
 };

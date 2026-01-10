@@ -35,7 +35,11 @@ const pastMembers = [
   'TonyAnenih.jpg'
 ];
 
-export const Footer: React.FC = () => {
+export type FooterProps = {
+  showPastMembers?: boolean;
+};
+
+export const Footer: React.FC<FooterProps> = ({ showPastMembers = true }) => {
   const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -51,38 +55,42 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-sdp-dark text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Past Members Section */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold mb-8 text-center">{t('footer.pastMembers')}</h3>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4">
-            {pastMembers.map((member) => {
-              const imagePath = `/past members/${member}`;
-              const displayName = formatName(member);
-              return (
-                <div
-                  key={member}
-                  className="flex flex-col items-center group cursor-pointer"
-                  title={displayName}
-                >
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-[#ef8636] transition-all duration-300 mb-2">
-                    <img
-                      src={imagePath}
-                      alt={displayName}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/placeholder.svg';
-                      }}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-400 text-center group-hover:text-[#ef8636] transition-colors line-clamp-2">
-                    {displayName}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {showPastMembers && (
+          <>
+            {/* Past Members Section */}
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold mb-8 text-center">{t('footer.pastMembers')}</h3>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4">
+                {pastMembers.map((member) => {
+                  const imagePath = `/past members/${member}`;
+                  const displayName = formatName(member);
+                  return (
+                    <div
+                      key={member}
+                      className="flex flex-col items-center group cursor-pointer"
+                      title={displayName}
+                    >
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-[#ef8636] transition-all duration-300 mb-2">
+                        <img
+                          src={imagePath}
+                          alt={displayName}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/placeholder.svg';
+                          }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-400 text-center group-hover:text-[#ef8636] transition-colors line-clamp-2">
+                        {displayName}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div>

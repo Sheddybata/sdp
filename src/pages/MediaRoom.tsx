@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { SDPTVPlayer } from '@/components/SDPTVPlayer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -117,27 +118,19 @@ const MediaRoom: React.FC = () => {
               <h2 className="text-3xl font-bold text-sdp-dark">SDP TV</h2>
             </div>
             <p className="text-gray-600 mb-8">
-              Watch interviews, speeches, and events featuring Prince Adebayo and other SDP leaders.
+              Watch interviews, speeches, and events featuring Prince Adebayo and other SDP leaders. 
+              Our TV player features non-stop programming with an interactive guide.
             </p>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-                <Card key={item} className="hover:shadow-lg transition-shadow">
-                  <div className="aspect-video bg-gray-200 rounded-t-lg flex items-center justify-center">
-                    <Video className="w-12 h-12 text-gray-400" />
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-bold mb-2">Prince Adebayo Interview - {item}</h3>
-                    <p className="text-sm text-gray-600">Latest interview on governance and policy</p>
-                    <Button className="w-full mt-4 bg-[#ef8636] hover:bg-[#ef8636]/90" size="sm">
-                      Watch Now
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <p className="text-gray-600 mb-4">YouTube API integration will display live feed here</p>
-              <Button variant="outline">
+            
+            <SDPTVPlayer />
+            
+            <div className="mt-12 text-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+              <p className="text-gray-600 mb-4">Want more? Check out our official YouTube channel for the full archive.</p>
+              <Button 
+                variant="outline" 
+                className="border-sdp-green text-sdp-green hover:bg-sdp-green hover:text-white"
+                onClick={() => window.open('https://www.youtube.com/@SDPNigeria', '_blank')}
+              >
                 View All Videos on YouTube
               </Button>
             </div>
