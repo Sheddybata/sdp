@@ -44,6 +44,8 @@ const WhyCard: React.FC<{
               src={imagePath}
               alt={title}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              loading="lazy"
+              decoding="async"
               onError={() => setImageError(true)}
             />
           ) : (
@@ -89,6 +91,8 @@ const WinCard: React.FC<{
             src={imagePath}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
             onError={() => setImageError(true)}
           />
         ) : (
@@ -183,6 +187,8 @@ const HomePage: React.FC = () => {
                       src="/AdewoleAdebayo.jpeg"
                       alt="Prince Adewale Adebayo"
                       className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700 hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                       onError={() => setCandidateImageError(true)}
                     />
                   ) : (

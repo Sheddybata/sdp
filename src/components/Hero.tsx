@@ -44,21 +44,31 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
       <div className="absolute inset-0">
         {/* Slideshow Background */}
         <div className="relative w-full h-full">
-          {heroImages.map((image, index) => (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                index === currentImageIndex && fadeIn ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              <img
-                src={image}
-                alt={`Hero slide ${index + 1}`}
-                className="w-full h-full object-cover scale-110 animate-zoom"
-                loading={index === 0 ? 'eager' : 'lazy'}
-              />
-            </div>
-          ))}
+          {heroImages.map((image, index) => {
+            const isCurrent = index === currentImageIndex;
+            const isNext = index === (currentImageIndex + 1) % heroImages.length;
+            
+            // Only render current and next image to save memory and bandwidth
+            if (!isCurrent && !isNext) return null;
+
+            return (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                  isCurrent && fadeIn ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <img
+                  src={image}
+                  alt={`Hero slide ${index + 1}`}
+                  className="w-full h-full object-cover scale-110 animate-zoom"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  decoding="async"
+                />
+              </div>
+            );
+          })}
         </div>
         
         {/* Gradient Overlays - Reduced opacity for better image visibility */}

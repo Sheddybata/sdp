@@ -108,6 +108,7 @@ export const ProductsSection: React.FC = () => {
                       handleImageError(product.id);
                     }}
                     loading="lazy"
+                    decoding="async"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#ef8636]/20 to-[#1daa62]/20">

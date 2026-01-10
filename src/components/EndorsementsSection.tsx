@@ -125,6 +125,8 @@ export const EndorsementsSection: React.FC = () => {
                           src={imagePath}
                           alt={endorsement.name}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
                           onError={() => handleImageError(endorsement.name)}
                         />
                       ) : (
@@ -184,6 +186,8 @@ export const EndorsementsSection: React.FC = () => {
                             src={imagePath}
                             alt={endorsement.name}
                             className="w-full h-full object-contain"
+                            loading="lazy"
+                            decoding="async"
                             onError={() => handleImageError(endorsement.name)}
                           />
                         ) : (
@@ -215,6 +219,8 @@ export const EndorsementsSection: React.FC = () => {
                             src={imagePath}
                             alt={endorsement.name}
                             className="w-full h-full object-contain"
+                            loading="lazy"
+                            decoding="async"
                             onError={() => handleImageError(endorsement.name)}
                           />
                         ) : (

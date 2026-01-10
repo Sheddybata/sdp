@@ -118,6 +118,14 @@ export const SDPTVPlayer: React.FC = () => {
   const playerRef = useRef<any>(null);
   const iframeRef = useRef<HTMLDivElement>(null);
 
+  // Preload all images for a smoother experience
+  useEffect(() => {
+    videos.forEach((video) => {
+      const img = new Image();
+      img.src = video.image;
+    });
+  }, []);
+
   useEffect(() => {
     // Load YouTube IFrame API
     if (!window.YT) {
@@ -270,6 +278,8 @@ export const SDPTVPlayer: React.FC = () => {
                   <img 
                     src={video.image} 
                     alt={video.title} 
+                    loading={index < 4 ? "eager" : "lazy"}
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/sdp tv/presidency.png';

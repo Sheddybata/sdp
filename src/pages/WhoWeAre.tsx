@@ -34,6 +34,8 @@ const MemberCard: React.FC<{ member: FormerMember; imagePath: string }> = ({ mem
                 src={imagePath}
                 alt={member.name}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
                 onLoad={() => setImageLoading(false)}
                 onError={() => {
                   setImageError(true);
@@ -463,6 +465,8 @@ const WhoWeAre: React.FC = () => {
                     src={item.imagePath} 
                     alt={t(`who.manifesto.${item.titleKey}`)}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-black/5 p-6">
                     <div className="w-16 h-16 backdrop-blur-md bg-white/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/40">
