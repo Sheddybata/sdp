@@ -17,20 +17,7 @@ interface DonorInfo {
 
 declare global {
   interface Window {
-    PaystackPop: {
-      setup: (options: {
-        key: string;
-        email: string;
-        amount: number;
-        ref: string;
-        firstname?: string;
-        lastname?: string;
-        phone?: string;
-        metadata?: Record<string, any>;
-        callback: (response: { reference: string; status: string; message: string }) => void;
-        onClose: () => void;
-      }) => { openIframe: () => void };
-    };
+    FlutterwaveCheckout: (options: any) => void;
   }
 }
 
@@ -48,14 +35,14 @@ export const DonateModal: React.FC<DonateModalProps> = ({ isOpen, onClose }) => 
   const [errors, setErrors] = useState<Partial<DonorInfo>>({});
   const amounts = [500, 1000, 2500, 5000, 10000];
 
-  // Paystack public key - Replace with your actual Paystack public key
-  const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || 'pk_test_your_public_key_here';
+  // Flutterwave public key
+  const FLUTTERWAVE_PUBLIC_KEY = import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY || 'FLWPUBK_TEST-your-key';
 
-  // Load Paystack script
+  // Load Flutterwave script
   useEffect(() => {
-    if (isOpen && !window.PaystackPop) {
+    if (isOpen && !window.FlutterwaveCheckout) {
       const script = document.createElement('script');
-      script.src = 'https://js.paystack.co/v1/inline.js';
+      script.src = 'https://checkout.flutterwave.com/v3.js';
       script.async = true;
       document.body.appendChild(script);
     }
@@ -98,7 +85,7 @@ export const DonateModal: React.FC<DonateModalProps> = ({ isOpen, onClose }) => 
       return;
     }
 
-    if (!window.PaystackPop) {
+    if (!window.FlutterwaveCheckout) {
       alert(t('donate.error.loading'));
       return;
     }
@@ -112,53 +99,36 @@ export const DonateModal: React.FC<DonateModalProps> = ({ isOpen, onClose }) => 
 
     const reference = generateReference();
 
-    const handler = window.PaystackPop.setup({
-      key: PAYSTACK_PUBLIC_KEY,
-      email: donorInfo.email,
-      amount: amount * 100, // Paystack expects amount in kobo (smallest currency unit)
-      ref: reference,
-      firstname: donorInfo.firstName,
-      lastname: donorInfo.lastName,
-      phone: donorInfo.phone,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: 'Donation Type',
-            variable_name: 'donation_type',
-            value: 'Campaign Donation'
-          },
-          {
-            display_name: 'Party',
-            variable_name: 'party',
-            value: 'Social Democratic Party (SDP)'
-          }
-        ]
+    window.FlutterwaveCheckout({
+      public_key: FLUTTERWAVE_PUBLIC_KEY,
+      tx_ref: reference,
+      amount: amount,
+      currency: 'NGN',
+      payment_options: 'card, banktransfer, ussd',
+      customer: {
+        email: donorInfo.email,
+        phone_number: donorInfo.phone,
+        name: `${donorInfo.firstName} ${donorInfo.lastName}`,
       },
-      callback: (response) => {
+      customizations: {
+        title: 'SDP Donation',
+        description: 'Campaign Donation for Social Democratic Party',
+        logo: 'https://sdp.org.ng/sdplogo.jpg',
+      },
+      callback: (response: any) => {
         setIsProcessing(false);
-        if (response.status === 'success') {
+        if (response.status === 'successful') {
           // Payment successful
           setStep(3); // Success step
-          // Here you can send the reference to your backend to verify the payment
-          console.log('Payment successful:', response.reference);
-          
-          // Optional: Send to your backend
-          // fetch('/api/verify-payment', {
-          //   method: 'POST',
-          //   headers: { 'Content-Type': 'application/json' },
-          //   body: JSON.stringify({ reference: response.reference })
-          // });
+          console.log('Payment successful:', response.tx_ref);
         } else {
           alert(t('donate.error.failed'));
         }
       },
-      onClose: () => {
+      onclose: () => {
         setIsProcessing(false);
-        alert(t('donate.error.closed'));
       }
     });
-
-    handler.openIframe();
   };
 
   const handleInputChange = (field: keyof DonorInfo, value: string) => {

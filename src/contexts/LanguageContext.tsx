@@ -89,7 +89,7 @@ const translations: Record<Language, Record<string, string>> = {
     'donate.form.back': 'Back',
     'donate.form.pay': 'Pay',
     'donate.form.processing': 'Processing...',
-    'donate.form.secure': 'Secure payment powered by Paystack',
+    'donate.form.secure': 'Secure payment powered by Flutterwave',
     'donate.success.title': 'Thank You!',
     'donate.success.message': 'Your donation has been received successfully.',
     'donate.success.email': 'A confirmation email has been sent to',
@@ -236,7 +236,10 @@ const translations: Record<Language, Record<string, string>> = {
     'who.constitution.download': 'Download Constitution (PDF)',
     'who.viewAchievements': 'View Achievements',
     'who.expand': 'Expand',
-    'who.collapse': 'Collapse'
+    'who.collapse': 'Collapse',
+    'sdptv.badge': 'Broadcast',
+    'sdptv.title': 'SDP TV',
+    'sdptv.subtitle': 'Watch our latest interviews, campaign highlights, and press conferences directly from our official broadcast channel.'
   },
   ha: {
     'nav.home': 'Gida',
@@ -318,7 +321,7 @@ const translations: Record<Language, Record<string, string>> = {
     'donate.form.back': 'Baya',
     'donate.form.pay': 'Biya',
     'donate.form.processing': 'Ana Aiki...',
-    'donate.form.secure': 'Biyan kuɗi mai aminci ta hanyar Paystack',
+    'donate.form.secure': 'Biyan kuɗi mai aminci ta hanyar Flutterwave',
     'donate.success.title': 'Na Gode!',
     'donate.success.message': 'An karɓi gudummawar ku cikin nasara.',
     'donate.success.email': 'An aika imel na tabbatarwa zuwa',
@@ -465,7 +468,10 @@ const translations: Record<Language, Record<string, string>> = {
     'who.constitution.download': 'Zazzage Kundin Tsarin Mulki (PDF)',
     'who.viewAchievements': 'Dubi Nasarori',
     'who.expand': 'Faɗaɗa',
-    'who.collapse': 'Rufe'
+    'who.collapse': 'Rufe',
+    'sdptv.badge': 'Watsa Labarai',
+    'sdptv.title': 'SDP TV',
+    'sdptv.subtitle': 'Kalli hirarrakinmu na kwanan nan, fice-ficen yakin neman zabe, da taron manema labarai kai tsaye daga tasharmu ta hukuma.'
   },
   yo: {
     'nav.home': 'Ile',
@@ -547,7 +553,7 @@ const translations: Record<Language, Record<string, string>> = {
     'donate.form.back': 'Padà',
     'donate.form.pay': 'Sanwo',
     'donate.form.processing': 'N ṣiṣẹ...',
-    'donate.form.secure': 'Isanwo aabo ti Paystack ṣe agbara',
+    'donate.form.secure': 'Isanwo aabo ti Flutterwave ṣe agbara',
     'donate.success.title': 'O Ṣeun!',
     'donate.success.message': 'A ti gba ifowosipele rẹ ni aṣeyọri.',
     'donate.success.email': 'A ti fi imẹli ijẹrisi ranṣẹ si',
@@ -694,7 +700,10 @@ const translations: Record<Language, Record<string, string>> = {
     'who.constitution.download': 'Ṣe igbasilẹ Ile-ẹgbẹ (PDF)',
     'who.viewAchievements': 'Wo Awọn Isegun',
     'who.expand': 'Fa',
-    'who.collapse': 'Dinku'
+    'who.collapse': 'Dinku',
+    'sdptv.badge': 'Ìgbóhùnsáfẹ́fẹ́',
+    'sdptv.title': 'SDP TV',
+    'sdptv.subtitle': 'Wo awọn ifọrọwanilẹnuwo tuntun wa, awọn ifojusi ipolongo, ati awọn apejọ atẹjade taara lati ikanni igbohunsafefe osise wa.'
   },
   ig: {
     'nav.home': 'Ụlọ',
@@ -776,7 +785,7 @@ const translations: Record<Language, Record<string, string>> = {
     'donate.form.back': 'Azụ',
     'donate.form.pay': 'Kwụọ ụgwọ',
     'donate.form.processing': 'Na-arụ ọrụ...',
-    'donate.form.secure': 'Ịkwụ ụgwọ nchekwa nke Paystack kwadoro',
+    'donate.form.secure': 'Ịkwụ ụgwọ nchekwa nke Flutterwave kwadoro',
     'donate.success.title': 'Daalụ!',
     'donate.success.message': 'A nabatala onyinye gị nke ọma.',
     'donate.success.email': 'Ezigala email nkwenye na',
@@ -923,7 +932,10 @@ const translations: Record<Language, Record<string, string>> = {
     'who.constitution.download': 'Budata Iwu (PDF)',
     'who.viewAchievements': 'Lelee Ihe Ndị E Nwetara',
     'who.expand': 'Mgbasa',
-    'who.collapse': 'Mbelata'
+    'who.collapse': 'Mbelata',
+    'sdptv.badge': 'Mgbasa Ozi',
+    'sdptv.title': 'SDP TV',
+    'sdptv.subtitle': 'Lelee ajụjụ ọnụ anyị kachasị nso nso a, ihe ndị pụtara ìhè na mkpọsa, na ogbako mgbasa ozi ozugbo site na ọwa mgbasa ozi gọọmentị anyị.'
   }
 };
 

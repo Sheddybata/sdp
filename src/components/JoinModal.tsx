@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface JoinModalProps {
   isOpen: boolean;
@@ -7,14 +10,33 @@ interface JoinModalProps {
 
 export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
   const [form, setForm] = useState({ name: '', email: '', zip: '' });
+  const [loading, setLoading] = useState(false);
   const [joined, setJoined] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.name && form.email) {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .insert([
+          { 
+            full_name: form.name, 
+            email: form.email, 
+            zip_code: form.zip,
+            source: 'join_modal'
+          }
+        ]);
+
+      if (error) throw error;
       setJoined(true);
+    } catch (err) {
+      console.error('Error joining:', err);
+      alert('Failed to join. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,8 +68,15 @@ export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
               <input type="text" placeholder="Full Name" value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required />
               <input type="email" placeholder="Email Address" value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" required />
               <input type="text" placeholder="ZIP Code" value={form.zip} onChange={e => setForm({...form, zip: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-              <button type="submit" className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">Join Now</button>
+              <button type="submit" disabled={loading} className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition disabled:bg-gray-400">
+                {loading ? 'Joining...' : 'Join Now'}
+              </button>
             </form>
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-500">
+                Want a formal ID card? <a href="/e-membership" className="text-[#01a85a] font-bold hover:underline">Register for E-Membership</a>
+              </p>
+            </div>
           </>
         )}
       </div>

@@ -8,9 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Upload, MapPin, User, Download, Eye } from 'lucide-react';
+import { CheckCircle2, Upload, MapPin, User, Download, Eye, CreditCard } from 'lucide-react';
 import QRCode from 'qrcode';
 import { getStates, getLGAsByState, getWardsByLGA } from '@/data/nigeria-locations';
+import { supabase } from '@/lib/supabase';
+
+declare global {
+  interface Window {
+    FlutterwaveCheckout: (options: any) => void;
+  }
+}
 
 type NigeriaWardsByState = Record<string, Record<string, string[]>>;
 type MembershipRecord = {
@@ -31,6 +38,9 @@ type MembershipRecord = {
 const EMembership: React.FC = () => {
   const wardsJsonUrl = '/nigeria-wards.json';
   const [step, setStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [registrationCompleted, setRegistrationCompleted] = useState(false);
+  const [paymentVerified, setPaymentVerified] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -46,9 +56,11 @@ const EMembership: React.FC = () => {
     profilePhoto: null as File | null
   });
   const [badgePreview, setBadgePreview] = useState<string | null>(null);
+  const [logoImg, setLogoImg] = useState<HTMLImageElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [wardsByState, setWardsByState] = useState<NigeriaWardsByState | null>(null);
   const [searchMemberId, setSearchMemberId] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const [searchResult, setSearchResult] = useState<MembershipRecord | null>(null);
   const [searchAttempted, setSearchAttempted] = useState(false);
 
@@ -67,8 +79,23 @@ const EMembership: React.FC = () => {
         if (!isMounted) return;
         setWardsByState(null);
       });
+    
+    // Load Flutterwave script
+    const script = document.createElement('script');
+    script.src = 'https://checkout.flutterwave.com/v3.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Pre-load party logo for faster badge generation
+    loadImage('/sdplogo.jpg', 'anonymous')
+      .then(img => setLogoImg(img))
+      .catch(err => console.error('Logo pre-load failed:', err));
+
     return () => {
       isMounted = false;
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
@@ -168,27 +195,140 @@ const EMembership: React.FC = () => {
 
   const normalizeMemberId = (value: string) => value.trim().toUpperCase().replace(/\s+/g, '');
 
-  const registryKey = 'sdp_membership_registry_v1';
-  const saveToRegistry = (record: MembershipRecord) => {
+  const saveToRegistry = async (record: MembershipRecord) => {
     try {
-      const raw = localStorage.getItem(registryKey);
-      const parsed: Record<string, MembershipRecord> = raw ? JSON.parse(raw) : {};
-      parsed[normalizeMemberId(record.memberId)] = record;
-      localStorage.setItem(registryKey, JSON.stringify(parsed));
-    } catch {
-      // ignore
+      // Save to Supabase (Centralized)
+      const { error } = await supabase
+        .from('members')
+        .upsert({
+          member_id: normalizeMemberId(record.memberId),
+          first_name: record.firstName,
+          last_name: record.lastName,
+          phone: record.phone,
+          email: record.email,
+          dob: record.dob,
+          join_date: record.joinDate,
+          voter_reg_no: record.voterRegNo,
+          state: record.state,
+          lga: record.lga,
+          ward: record.ward,
+          created_at: record.createdAt
+        }, { onConflict: 'member_id' });
+      
+      if (error) {
+        console.error('Supabase save error:', error);
+        throw error;
+      }
+    } catch (e) {
+      console.error('Save to registry failed:', e);
+      throw e;
     }
   };
 
-  const findInRegistry = (memberId: string): MembershipRecord | null => {
+  const findInRegistry = async (memberId: string): Promise<MembershipRecord | null> => {
     try {
-      const raw = localStorage.getItem(registryKey);
-      if (!raw) return null;
-      const parsed: Record<string, MembershipRecord> = JSON.parse(raw);
-      return parsed[normalizeMemberId(memberId)] || null;
+      const normalizedId = normalizeMemberId(memberId);
+      
+      // Query Supabase (Source of Truth)
+      const { data, error } = await supabase
+        .from('members')
+        .select('*')
+        .eq('member_id', normalizedId)
+        .single();
+      
+      if (data && !error) {
+        return {
+          memberId: data.member_id,
+          firstName: data.first_name,
+          lastName: data.last_name,
+          phone: data.phone,
+          email: data.email,
+          dob: data.dob,
+          joinDate: data.join_date,
+          voterRegNo: data.voter_reg_no,
+          state: data.state,
+          lga: data.lga,
+          ward: data.ward,
+          createdAt: data.created_at
+        };
+      }
+      return null;
     } catch {
       return null;
     }
+  };
+
+  const handleFinalSubmit = async () => {
+    setIsProcessing(true);
+    try {
+      const currentMemberId = formData.memberId || `SDP-${formData.firstName.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+      
+      const record: MembershipRecord = {
+        memberId: currentMemberId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        dob: formData.dob,
+        joinDate: formData.joinDate,
+        voterRegNo: formData.voterRegNo,
+        state: formData.state,
+        lga: formData.lga,
+        ward: formData.ward,
+        createdAt: new Date().toISOString()
+      };
+
+      await saveToRegistry(record);
+      setFormData(prev => ({ ...prev, memberId: currentMemberId }));
+      setRegistrationCompleted(true);
+      setStep(4);
+      // Generate badge immediately after registration
+      setTimeout(() => generateBadge(), 100);
+    } catch (e: any) {
+      console.error('Registration error:', e);
+      alert(`Registration failed: ${e.message || 'Check your internet or database connection'}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePayment = () => {
+    if (!window.FlutterwaveCheckout) {
+      alert('Payment system is still loading. Please wait a moment.');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    window.FlutterwaveCheckout({
+      public_key: import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY || 'FLWPUBK_TEST-your-key',
+      tx_ref: `SDP-MEM-${Date.now()}`,
+      amount: 100,
+      currency: 'NGN',
+      payment_options: 'card, banktransfer, ussd',
+      customer: {
+        email: formData.email,
+        phone_number: formData.phone,
+        name: `${formData.firstName} ${formData.lastName}`,
+      },
+      customizations: {
+        title: 'SDP Membership Fee',
+        description: 'Payment for digital membership card',
+        logo: 'https://sdp.org.ng/sdplogo.jpg',
+      },
+      callback: (data: any) => {
+        setIsProcessing(false);
+        if (data.status === 'successful') {
+          setPaymentVerified(true);
+          generateBadge();
+        } else {
+          alert('Payment was not successful. Please try again.');
+        }
+      },
+      onclose: () => {
+        setIsProcessing(false);
+      },
+    });
   };
 
   const generateBadge = async () => {
@@ -213,18 +353,20 @@ const EMembership: React.FC = () => {
 
     const objectUrl = URL.createObjectURL(formData.profilePhoto);
     try {
-      const qrDataUrl = await QRCode.toDataURL(currentMemberId, {
+      // Parallelize QR generation and Photo loading
+      const qrPromise = QRCode.toDataURL(currentMemberId, {
         margin: 1,
         width: 220,
         color: { dark: '#111827', light: '#ffffff' }
       });
-      const [photoImg, logoImg] = await Promise.all([
-        loadImage(objectUrl, 'anonymous'),
-        loadImage('/sdplogo.jpg', 'anonymous')
-      ]);
+      const photoPromise = loadImage(objectUrl, 'anonymous');
+      
+      const [qrDataUrl, photoImg] = await Promise.all([qrPromise, photoPromise]);
       const qrImg = await loadImage(qrDataUrl, null);
 
       // Background
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -238,12 +380,20 @@ const EMembership: React.FC = () => {
       ctx.fillStyle = GREEN;
       ctx.fillRect(0, 0, canvas.width, 120);
 
-      // Logo (top-left)
+      // Logo (top-left) - Use pre-loaded logo if available
       const logoW = 110;
       const logoH = 90;
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(24, 16, logoW + 16, logoH + 16);
-      ctx.drawImage(logoImg, 32, 24, logoW, logoH);
+      
+      if (logoImg) {
+        ctx.drawImage(logoImg, 32, 24, logoW, logoH);
+      } else {
+        // Fallback if pre-load failed
+        const fallbackLogo = await loadImage('/sdplogo.jpg', 'anonymous');
+        ctx.drawImage(fallbackLogo, 32, 24, logoW, logoH);
+      }
+      
       ctx.strokeStyle = ORANGE;
       ctx.lineWidth = 4;
       ctx.strokeRect(24, 16, logoW + 16, logoH + 16);
@@ -447,21 +597,7 @@ const EMembership: React.FC = () => {
       // Convert to data URL for preview
       setBadgePreview(canvas.toDataURL('image/png'));
 
-      // Persist record for verification/search
-      saveToRegistry({
-        memberId: currentMemberId,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        phone: formData.phone,
-        email: formData.email,
-        dob: formData.dob,
-        joinDate: formData.joinDate,
-        voterRegNo: formData.voterRegNo,
-        state: formData.state,
-        lga: formData.lga,
-        ward: formData.ward,
-        createdAt: new Date().toISOString()
-      });
+      // Persist record for verification/search (already handled in handleFinalSubmit)
     } catch (e) {
       alert('Failed to generate badge. Please try again.');
     } finally {
@@ -479,7 +615,7 @@ const EMembership: React.FC = () => {
   };
 
   const nextStep = () => {
-    if (step < 3) setStep(step + 1);
+    if (step < 4) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -510,8 +646,8 @@ const EMembership: React.FC = () => {
           <Card>
             <CardHeader>
               <div className="mb-4">
-                <Progress value={(step / 3) * 100} className="h-2" />
-                <p className="text-sm text-gray-600 mt-2 text-center">Step {step} of 3</p>
+                <Progress value={(step / 4) * 100} className="h-2" />
+                <p className="text-sm text-gray-600 mt-2 text-center">Step {step} of 4</p>
               </div>
               <CardTitle className="text-2xl text-center">Registration Wizard</CardTitle>
             </CardHeader>
@@ -654,21 +790,20 @@ const EMembership: React.FC = () => {
                       Back
                     </Button>
                     <Button onClick={nextStep} className="flex-1 bg-[#ef8636] hover:bg-[#ef8636]/90" disabled={!formData.ward}>
-                      Continue to Photo & Badge
+                      Continue to Photo
                     </Button>
                   </div>
                 </div>
               )}
 
-              {/* Step 3: Profile Photo & Digital Badge */}
+              {/* Step 3: Profile Photo */}
               {step === 3 && (
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 mb-6">
                     <User className="w-6 h-6 text-[#ef8636]" />
-                    <h3 className="text-xl font-bold">Step 3: Profile Photo & Digital Badge</h3>
+                    <h3 className="text-xl font-bold">Step 3: Profile Photo</h3>
                   </div>
                   
-                  {/* Profile Photo Upload */}
                   <div>
                     <Label htmlFor="profilePhoto">Profile Photo *</Label>
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -702,51 +837,101 @@ const EMembership: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Badge Generation */}
-                  {formData.profilePhoto && (
-                    <div className="space-y-4">
-                      {/* Canvas must exist before badge generation */}
-                      <canvas ref={canvasRef} className="hidden" />
-                      <Button 
-                        onClick={generateBadge} 
-                        className="w-full bg-[#1daa62] hover:bg-[#1daa62]/90"
-                        disabled={!formData.firstName || !formData.lastName || !formData.state || !formData.lga || !formData.ward || !formData.joinDate}
-                      >
-                        Auto-Generate Digital Badge
-                      </Button>
+                  <div className="flex gap-4">
+                    <Button onClick={prevStep} variant="outline" className="flex-1">
+                      Back
+                    </Button>
+                    <Button 
+                      onClick={handleFinalSubmit} 
+                      className="flex-1 bg-[#01a85a] hover:bg-[#01a85a]/90" 
+                      disabled={!formData.profilePhoto || isProcessing}
+                    >
+                      {isProcessing ? 'Saving...' : 'Complete Registration'}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
-                      {/* Badge Preview */}
-                      {badgePreview && (
+              {/* Step 4: Success & Optional Badge Payment */}
+              {step === 4 && (
+                <div className="space-y-6 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-4 mb-8">
+                    <div className="w-20 h-20 bg-[#1daa62]/20 rounded-full flex items-center justify-center">
+                      <CheckCircle2 className="w-12 h-12 text-[#1daa62]" />
+                    </div>
+                    <h3 className="text-3xl font-bold text-sdp-dark">Registration Successful!</h3>
+                    <p className="text-gray-600 max-w-md mx-auto">
+                      Welcome to the SDP! Your membership has been registered in the national database.
+                    </p>
+                    <div className="bg-gray-100 px-4 py-2 rounded-lg">
+                      <p className="text-sm text-gray-500">Your Membership ID:</p>
+                      <p className="text-xl font-black text-sdp-dark tracking-wider">{formData.memberId}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t pt-8">
+                    <h4 className="text-xl font-bold mb-4">Your Digital Membership Card</h4>
+                    <p className="text-gray-600 mb-6 text-sm">
+                      Your official SDP Digital Membership Card has been generated. You can download it below.
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <canvas ref={canvasRef} className="hidden" />
+                      {badgePreview ? (
                         <Card className="bg-gradient-to-br from-[#1daa62]/10 to-[#0d7a4a]/10 border-[#1daa62]">
                           <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                               <Eye className="w-5 h-5 text-[#1daa62]" />
-                              Badge Preview
+                              Your Digital Badge
                             </CardTitle>
                           </CardHeader>
                           <CardContent className="space-y-4">
                             <div className="flex justify-center">
                               <img 
                                 src={badgePreview} 
-                                alt="Digital Badge Preview" 
+                                alt="Digital Badge" 
                                 className="max-w-full h-auto rounded-lg shadow-lg border-4 border-white"
                               />
                             </div>
                             <Button 
                               onClick={downloadBadge} 
-                              className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90"
+                              className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90 font-bold"
                             >
                               <Download className="w-4 h-4 mr-2" />
-                              Download Badge
+                              Download Badge (FREE)
                             </Button>
                           </CardContent>
                         </Card>
+                      ) : (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1daa62] mx-auto mb-4"></div>
+                          <p className="text-sm text-gray-500">Generating your card...</p>
+                        </div>
                       )}
                     </div>
-                  )}
 
-                  <Button onClick={prevStep} variant="outline" className="w-full">
-                    Back
+                    <div className="mt-8 p-4 bg-orange-50 rounded-lg border border-orange-100">
+                      <h5 className="font-bold text-orange-800 mb-2">Support the Party</h5>
+                      <p className="text-sm text-orange-700 mb-4">
+                        While the ID card is free, you can support our grassroots mission with a small donation.
+                      </p>
+                      <Button 
+                        onClick={handlePayment} 
+                        variant="outline"
+                        className="w-full border-[#ef8636] text-[#ef8636] hover:bg-[#ef8636] hover:text-white"
+                        disabled={isProcessing}
+                      >
+                        {isProcessing ? 'Processing...' : 'Optional: Support with ₦100'}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={() => window.location.href = '/'} 
+                    variant="link" 
+                    className="text-gray-500 hover:text-sdp-dark"
+                  >
+                    Return to Home Page
                   </Button>
                 </div>
               )}
@@ -775,13 +960,20 @@ const EMembership: React.FC = () => {
                 </div>
                 <Button
                   className="bg-[#01a85a] hover:bg-[#01a85a]/90"
-                  onClick={() => {
+                  disabled={isSearching}
+                  onClick={async () => {
+                    if (!searchMemberId.trim()) return;
                     setSearchAttempted(true);
-                    const found = findInRegistry(searchMemberId);
-                    setSearchResult(found);
+                    setIsSearching(true);
+                    try {
+                      const found = await findInRegistry(searchMemberId);
+                      setSearchResult(found);
+                    } finally {
+                      setIsSearching(false);
+                    }
                   }}
                 >
-                  Search
+                  {isSearching ? 'Searching...' : 'Search'}
                 </Button>
               </div>
 
@@ -790,7 +982,12 @@ const EMembership: React.FC = () => {
                   <p className="text-sm text-gray-600">Membership ID</p>
                   <p className="text-lg font-bold text-sdp-dark">{normalizeMemberId(searchMemberId) || '-'}</p>
 
-                  {searchResult ? (
+                  {isSearching ? (
+                    <div className="mt-4 flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#01a85a]"></div>
+                      <span className="ml-3 text-sm text-gray-500">Verifying in national database...</span>
+                    </div>
+                  ) : searchResult ? (
                     <div className="mt-4 grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
                       <div><span className="font-semibold">Name:</span> {searchResult.firstName} {searchResult.lastName}</div>
                       <div><span className="font-semibold">Phone:</span> {searchResult.phone}</div>
@@ -801,8 +998,8 @@ const EMembership: React.FC = () => {
                       <div><span className="font-semibold">Member Since:</span> {formatMonthYear(searchResult.joinDate)}</div>
                     </div>
                   ) : (
-                    <p className="mt-3 text-sm text-gray-600">
-                      Not found in this browser. Generate a badge at least once on this device to save a record.
+                    <p className="mt-3 text-sm text-red-600 font-medium">
+                      Member ID not found. Please ensure the ID is correct or contact your ward chairman.
                     </p>
                   )}
                 </div>

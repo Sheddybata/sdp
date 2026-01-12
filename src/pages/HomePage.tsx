@@ -13,11 +13,14 @@ import { ElectionCountdown } from '@/components/ElectionCountdown';
 import { FloatingActionButtons } from '@/components/FloatingActionButtons';
 import { EndorsementsSection } from '@/components/EndorsementsSection';
 import { ProductsSection } from '@/components/ProductsSection';
+import { SDPTVPlayer } from '@/components/SDPTVPlayer';
+import { EMembershipSection } from '@/components/EMembershipSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useMemberCount } from '@/hooks/useMemberCount';
 
 // Why Card Component
 const WhyCard: React.FC<{
@@ -132,6 +135,7 @@ const getWinImagePath = (title: string): string => {
 
 const HomePage: React.FC = () => {
   const { t } = useLanguage();
+  const { count: memberCount } = useMemberCount();
   const [joinOpen, setJoinOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -148,7 +152,7 @@ const HomePage: React.FC = () => {
         setActiveSection={setActiveSection}
       />
       
-      <FloatingStatsBar members={247893} states={36} year={2027} />
+      <FloatingStatsBar members={memberCount} states={36} year={2027} />
       <FloatingActionButtons
         onJoinClick={() => setJoinOpen(true)}
         onDonateClick={() => setDonateOpen(true)}
@@ -160,7 +164,7 @@ const HomePage: React.FC = () => {
         <Hero 
           onJoinClick={() => setJoinOpen(true)} 
           onDonateClick={() => setDonateOpen(true)}
-          supporterCount={247893}
+          supporterCount={memberCount}
         />
       </section>
 
@@ -293,6 +297,27 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* SDP TV Section */}
+      <section id="sdp-tv" className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-2 bg-sdp-green/10 text-sdp-green rounded-full text-sm font-semibold mb-4">
+              {t('sdptv.badge')}
+            </span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-sdp-dark">{t('sdptv.title')}</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {t('sdptv.subtitle')}
+            </p>
+          </div>
+          <div className="bg-gray-50 p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
+            <SDPTVPlayer />
+          </div>
+        </div>
+      </section>
+
+      {/* E-Membership Section */}
+      <EMembershipSection />
 
       {/* Latest Wins - 3 Column Grid */}
       <section id="wins" className="py-20 bg-gray-50">
