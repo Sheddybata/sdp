@@ -114,7 +114,7 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
           </div>
           
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-white tracking-tight animate-fade-in-up" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold mb-6 leading-tight text-white tracking-tight animate-fade-in-up" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
             {t('hero.title')}
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ef8636] via-[#ef8636] to-[#1daa62] animate-gradient-text">

@@ -39,10 +39,10 @@ export const EMembershipSection: React.FC = () => {
             <span className="inline-block px-4 py-2 bg-sdp-orange/10 text-sdp-orange rounded-full text-sm font-bold mb-6 tracking-wide uppercase">
               Become a Member
             </span>
-            <h2 className="text-4xl md:text-5xl font-black text-sdp-dark mb-6 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-sdp-dark mb-6 leading-tight">
               Join the <span className="text-sdp-green">E-Membership</span> Portal
             </h2>
-            <p className="text-xl text-gray-600 mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 mb-10 leading-relaxed">
               Step into the future of political engagement. Our digital membership portal makes it easy for every Nigerian to join the movement for a better nation.
             </p>
 

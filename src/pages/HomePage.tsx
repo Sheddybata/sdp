@@ -228,10 +228,10 @@ const HomePage: React.FC = () => {
                   <div className="h-px w-16 bg-[#f48735]"></div>
                   <span className="text-[#f48735] font-bold text-lg tracking-[0.2em] uppercase">The Visionary Leader</span>
                 </div>
-                <h2 className="text-5xl md:text-7xl font-black text-sdp-dark mb-6 leading-tight">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-sdp-dark mb-6 leading-tight">
                   Prince Adewale <span className="text-[#01a85a]">Adebayo</span>
                 </h2>
-                <p className="text-2xl text-gray-600 font-light leading-relaxed">
+                <p className="text-xl md:text-2xl text-gray-600 font-light leading-relaxed">
                   A distinguished Nigerian Lawyer, media mogul, and the architect of a new democratic dawn.
                 </p>
               </header>
@@ -305,7 +305,7 @@ const HomePage: React.FC = () => {
             <span className="inline-block px-4 py-2 bg-sdp-green/10 text-sdp-green rounded-full text-sm font-semibold mb-4">
               {t('sdptv.badge')}
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-sdp-dark">{t('sdptv.title')}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-sdp-dark">{t('sdptv.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t('sdptv.subtitle')}
             </p>
@@ -326,7 +326,7 @@ const HomePage: React.FC = () => {
             <span className="inline-block px-4 py-2 bg-[#1daa62]/10 text-[#1daa62] rounded-full text-sm font-semibold mb-4">
               {t('wins.achievements')}
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-sdp-dark">{t('wins.title')}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-sdp-dark">{t('wins.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t('wins.subtitle')}
             </p>
@@ -368,7 +368,7 @@ const HomePage: React.FC = () => {
             <span className="inline-block px-4 py-2 bg-[#ef8636]/10 text-[#ef8636] rounded-full text-sm font-semibold mb-4">
               {t('why.values')}
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-sdp-dark">{t('why.title')}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-sdp-dark">{t('why.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {t('why.subtitle')}
             </p>
@@ -420,7 +420,7 @@ const HomePage: React.FC = () => {
         
         <div className="max-w-4xl mx-auto px-6 relative z-10">
           <div className="text-center mb-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">{t('footer.find')}</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('footer.find')}</h2>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               {t('footer.subtitle')}
             </p>
