@@ -8,10 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Upload, MapPin, User, Download, Eye, CreditCard } from 'lucide-react';
+import { CheckCircle2, Upload, MapPin, User, Download, Eye, CreditCard, Calendar as CalendarIcon } from 'lucide-react';
 import QRCode from 'qrcode';
 import { getStates, getLGAsByState, getWardsByLGA } from '@/data/nigeria-locations';
 import { supabase } from '@/lib/supabase';
+import { DatePicker } from '@/components/ui/date-picker';
+import { parseISO, format } from 'date-fns';
 
 declare global {
   interface Window {
@@ -574,10 +576,14 @@ const EMembership: React.FC = () => {
 
         ctx.fillStyle = valueColor;
         
-        // Auto-scale font size for field values (like long Ward names)
+        // Auto-scale font size for field values (like long Ward names or Voter Reg Nos)
         let fieldValueFontSize = 22;
         ctx.font = `bold ${fieldValueFontSize}px Arial`;
-        while (fieldValueFontSize > 14 && ctx.measureText(value).width > width && maxLines === 1) {
+        
+        // For single line, scale until it fits width. 
+        // For multi-line, we still scale a bit if the overall text is very long to prevent frame overlap.
+        const limit = maxLines === 1 ? width : width * 1.8; 
+        while (fieldValueFontSize > 12 && ctx.measureText(value).width > limit) {
           fieldValueFontSize -= 1;
           ctx.font = `bold ${fieldValueFontSize}px Arial`;
         }
@@ -753,20 +759,22 @@ const EMembership: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="dob">Date of Birth *</Label>
-                    <Input
-                      id="dob"
-                      type="date"
-                      value={formData.dob}
-                      onChange={(e) => handleInputChange('dob', e.target.value)}
+                    <DatePicker 
+                      date={formData.dob ? parseISO(formData.dob) : undefined}
+                      setDate={(date) => handleInputChange('dob', date ? format(date, 'yyyy-MM-dd') : '')}
+                      placeholder="Select date of birth"
+                      fromYear={1920}
+                      toYear={new Date().getFullYear()}
                     />
                   </div>
                   <div>
                     <Label htmlFor="joinDate">Join Date *</Label>
-                    <Input
-                      id="joinDate"
-                      type="date"
-                      value={formData.joinDate}
-                      onChange={(e) => handleInputChange('joinDate', e.target.value)}
+                    <DatePicker 
+                      date={formData.joinDate ? parseISO(formData.joinDate) : undefined}
+                      setDate={(date) => handleInputChange('joinDate', date ? format(date, 'yyyy-MM-dd') : '')}
+                      placeholder="Select join date"
+                      fromYear={1989}
+                      toYear={new Date().getFullYear() + 1}
                     />
                   </div>
                   <div>
@@ -776,6 +784,7 @@ const EMembership: React.FC = () => {
                       value={formData.voterRegNo}
                       onChange={(e) => handleInputChange('voterRegNo', e.target.value)}
                       placeholder="Enter your voter registration number"
+                      maxLength={100}
                     />
                   </div>
                   <Button onClick={nextStep} className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90">
