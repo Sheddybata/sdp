@@ -22,8 +22,10 @@ declare global {
 type NigeriaWardsByState = Record<string, Record<string, string[]>>;
 type MembershipRecord = {
   memberId: string;
+  title: string;
   firstName: string;
-  lastName: string;
+  surname: string;
+  otherName: string;
   phone: string;
   email: string;
   dob: string;
@@ -36,14 +38,17 @@ type MembershipRecord = {
 };
 
 const EMembership: React.FC = () => {
+  const titles = ['Mr.', 'Mrs.', 'Ms.', 'Chief', 'Hon.', 'Prince', 'Princess', 'Dr.', 'Alh.', 'Hajia', 'Major', 'Gen.', 'Pst.', 'Rev.', 'Engr.', 'Barr.'];
   const wardsJsonUrl = '/nigeria-wards.json';
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [registrationCompleted, setRegistrationCompleted] = useState(false);
   const [paymentVerified, setPaymentVerified] = useState(false);
   const [formData, setFormData] = useState({
+    title: '',
     firstName: '',
-    lastName: '',
+    surname: '',
+    otherName: '',
     phone: '',
     email: '',
     dob: '',
@@ -202,8 +207,10 @@ const EMembership: React.FC = () => {
         .from('members')
         .upsert({
           member_id: normalizeMemberId(record.memberId),
+          title: record.title,
           first_name: record.firstName,
-          last_name: record.lastName,
+          surname: record.surname,
+          other_name: record.otherName,
           phone: record.phone,
           email: record.email,
           dob: record.dob,
@@ -239,8 +246,10 @@ const EMembership: React.FC = () => {
       if (data && !error) {
         return {
           memberId: data.member_id,
+          title: data.title,
           firstName: data.first_name,
-          lastName: data.last_name,
+          surname: data.surname,
+          otherName: data.other_name,
           phone: data.phone,
           email: data.email,
           dob: data.dob,
@@ -261,12 +270,14 @@ const EMembership: React.FC = () => {
   const handleFinalSubmit = async () => {
     setIsProcessing(true);
     try {
-      const currentMemberId = formData.memberId || `SDP-${formData.firstName.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+      const currentMemberId = formData.memberId || `SDP-${formData.surname.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
       
       const record: MembershipRecord = {
         memberId: currentMemberId,
+        title: formData.title,
         firstName: formData.firstName,
-        lastName: formData.lastName,
+        surname: formData.surname,
+        otherName: formData.otherName,
         phone: formData.phone,
         email: formData.email,
         dob: formData.dob,
@@ -309,7 +320,7 @@ const EMembership: React.FC = () => {
       customer: {
         email: formData.email,
         phone_number: formData.phone,
-        name: `${formData.firstName} ${formData.lastName}`,
+        name: `${formData.firstName} ${formData.surname}`,
       },
       customizations: {
         title: 'SDP Membership Fee',
@@ -343,7 +354,7 @@ const EMembership: React.FC = () => {
     canvas.height = 638;
 
     // Ensure stable member ID for this session
-    const currentMemberId = formData.memberId || `SDP-${formData.firstName.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
+    const currentMemberId = formData.memberId || `SDP-${formData.surname.substring(0, 3).toUpperCase()}-${Date.now().toString().slice(-6)}`;
     if (!formData.memberId) {
       setFormData(prev => ({ ...prev, memberId: currentMemberId }));
     }
@@ -458,14 +469,24 @@ const EMembership: React.FC = () => {
 
       ctx.textAlign = 'left';
       ctx.fillStyle = '#111827';
-      ctx.font = 'bold 38px Arial';
+      
+      const fullName = `${formData.title ? formData.title + ' ' : ''}${formData.surname.toUpperCase()} ${formData.firstName.toUpperCase()} ${formData.otherName ? formData.otherName.toUpperCase() : ''}`.trim();
+      
+      // Auto-scale font size for full name
+      let nameFontSize = 38;
+      ctx.font = `bold ${nameFontSize}px Arial`;
+      while (nameFontSize > 20 && ctx.measureText(fullName).width > infoW) {
+        nameFontSize -= 1;
+        ctx.font = `bold ${nameFontSize}px Arial`;
+      }
+      
       y = wrapText(
         ctx,
-        `${formData.firstName.toUpperCase()} ${formData.lastName.toUpperCase()}`,
+        fullName,
         infoX,
         y,
         infoW,
-        44,
+        nameFontSize + 6,
         2
       );
 
@@ -552,9 +573,17 @@ const EMembership: React.FC = () => {
         ctx.fillText(label.toUpperCase(), x, startY);
 
         ctx.fillStyle = valueColor;
-        ctx.font = valueFont;
+        
+        // Auto-scale font size for field values (like long Ward names)
+        let fieldValueFontSize = 22;
+        ctx.font = `bold ${fieldValueFontSize}px Arial`;
+        while (fieldValueFontSize > 14 && ctx.measureText(value).width > width && maxLines === 1) {
+          fieldValueFontSize -= 1;
+          ctx.font = `bold ${fieldValueFontSize}px Arial`;
+        }
+        
         const valueY = startY + labelLineHeight + labelToValueGap;
-        const endY = wrapText(ctx, value || '-', x, valueY, width, valueLineHeight, maxLines);
+        const endY = wrapText(ctx, value || '-', x, valueY, width, fieldValueFontSize + 4, maxLines);
 
         ctx.restore();
         return endY;
@@ -609,7 +638,7 @@ const EMembership: React.FC = () => {
     if (!badgePreview) return;
     
     const link = document.createElement('a');
-    link.download = `SDP-Badge-${formData.firstName}-${formData.lastName}.png`;
+    link.download = `SDP-Badge-${formData.surname}-${formData.firstName}.png`;
     link.href = badgePreview;
     link.click();
   };
@@ -659,7 +688,30 @@ const EMembership: React.FC = () => {
                     <CheckCircle2 className="w-6 h-6 text-[#ef8636]" />
                     <h3 className="text-xl font-bold">Step 1: Basic Information</h3>
                   </div>
+                  
                   <div className="grid md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <Label htmlFor="title">Title *</Label>
+                      <Select value={formData.title} onValueChange={(value) => handleInputChange('title', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select title" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {titles.map(t => (
+                            <SelectItem key={t} value={t}>{t}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="surname">Surname *</Label>
+                      <Input
+                        id="surname"
+                        value={formData.surname}
+                        onChange={(e) => handleInputChange('surname', e.target.value)}
+                        placeholder="Enter your surname"
+                      />
+                    </div>
                     <div>
                       <Label htmlFor="firstName">First Name *</Label>
                       <Input
@@ -669,13 +721,13 @@ const EMembership: React.FC = () => {
                         placeholder="Enter your first name"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
+                    <div className="md:col-span-2">
+                      <Label htmlFor="otherName">Other Name (Optional)</Label>
                       <Input
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={(e) => handleInputChange('lastName', e.target.value)}
-                        placeholder="Enter your last name"
+                        id="otherName"
+                        value={formData.otherName}
+                        onChange={(e) => handleInputChange('otherName', e.target.value)}
+                        placeholder="Enter your middle or other name"
                       />
                     </div>
                   </div>
@@ -989,7 +1041,9 @@ const EMembership: React.FC = () => {
                     </div>
                   ) : searchResult ? (
                     <div className="mt-4 grid gap-2 text-sm text-gray-700 sm:grid-cols-2">
-                      <div><span className="font-semibold">Name:</span> {searchResult.firstName} {searchResult.lastName}</div>
+                      <div className="sm:col-span-2">
+                        <span className="font-semibold">Name:</span> {searchResult.title} {searchResult.surname} {searchResult.firstName} {searchResult.otherName}
+                      </div>
                       <div><span className="font-semibold">Phone:</span> {searchResult.phone}</div>
                       <div className="sm:col-span-2"><span className="font-semibold">Voter Reg No:</span> {searchResult.voterRegNo || '-'}</div>
                       <div><span className="font-semibold">State:</span> {searchResult.state}</div>
