@@ -183,21 +183,46 @@ const EMembership: React.FC = () => {
     const words = (text || '-').split(' ');
     let line = '';
     let lines = 0;
+
     for (let n = 0; n < words.length; n++) {
-      const testLine = line ? `${line} ${words[n]}` : words[n];
-      const metrics = ctx.measureText(testLine);
-      if (metrics.width > maxWidth && line) {
-        ctx.fillText(line, x, y);
-        y += lineHeight;
-        lines++;
-        line = words[n];
-        if (lines >= maxLines - 1) break;
+      let testLine = line ? `${line} ${words[n]}` : words[n];
+      let metrics = ctx.measureText(testLine);
+
+      if (metrics.width > maxWidth) {
+        // If the word itself is wider than maxWidth, we need to break it by character
+        if (ctx.measureText(words[n]).width > maxWidth) {
+          const chars = words[n].split('');
+          for (let c = 0; c < chars.length; c++) {
+            let charTestLine = line ? `${line}${chars[c]}` : chars[c];
+            if (ctx.measureText(charTestLine).width > maxWidth) {
+              ctx.fillText(line, x, y);
+              y += lineHeight;
+              lines++;
+              line = chars[c];
+              if (lines >= maxLines) return y;
+            } else {
+              line = charTestLine;
+            }
+          }
+        } else if (line) {
+          ctx.fillText(line, x, y);
+          y += lineHeight;
+          lines++;
+          line = words[n];
+          if (lines >= maxLines) return y;
+        } else {
+          line = words[n];
+        }
       } else {
         line = testLine;
       }
     }
-    ctx.fillText(line, x, y);
-    return y + lineHeight;
+    
+    if (lines < maxLines) {
+      ctx.fillText(line, x, y);
+      y += lineHeight;
+    }
+    return y;
   };
 
   const normalizeMemberId = (value: string) => value.trim().toUpperCase().replace(/\s+/g, '');
@@ -428,7 +453,7 @@ const EMembership: React.FC = () => {
 
       // Column layout (Photo left, text middle, QR right)
       const photoX = 60;
-      const photoY = 220;
+      const photoY = 245; // Moved down from 220
       const photoW = 220;
       const photoH = 280;
       ctx.fillStyle = '#ffffff';
@@ -452,176 +477,117 @@ const EMembership: React.FC = () => {
       }
       ctx.drawImage(photoImg, sx, sy, sw, sh, photoX, photoY, photoW, photoH);
 
-      // QR panel (right)
-      const qrX = canvas.width - 290;
-      const qrY = 365;
-      const qrSize = 190;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(qrX - 12, qrY - 12, qrSize + 24, qrSize + 24);
-      ctx.strokeStyle = ORANGE;
-      ctx.lineWidth = 6;
-      ctx.strokeRect(qrX - 12, qrY - 12, qrSize + 24, qrSize + 24);
-      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+      // --- LAYOUT ENGINE ---
+      const infoX = photoX + photoW + 40;
+      const rightMargin = 60;
+      const cardRightEdge = canvas.width - rightMargin;
+      const fullWidth = cardRightEdge - infoX;
+      
+      let currentY = 265; // Moved down from 235
 
-      // Middle text block (stacked fields like the reference: label on top, value under it)
-      const infoX = photoX + photoW + 50;
-      const infoMaxX = qrX - 50;
-      const infoW = Math.max(240, infoMaxX - infoX);
-      let y = 245;
-
+      // 1. Full Name (Full width above QR code)
       ctx.textAlign = 'left';
       ctx.fillStyle = '#111827';
-      
       const fullName = `${formData.title ? formData.title + ' ' : ''}${formData.surname.toUpperCase()} ${formData.firstName.toUpperCase()} ${formData.otherName ? formData.otherName.toUpperCase() : ''}`.trim();
       
-      // Auto-scale font size for full name
-      let nameFontSize = 38;
+      let nameFontSize = 32; // Reduced from 38
       ctx.font = `bold ${nameFontSize}px Arial`;
-      while (nameFontSize > 20 && ctx.measureText(fullName).width > infoW) {
+      while (nameFontSize > 18 && ctx.measureText(fullName).width > fullWidth) {
         nameFontSize -= 1;
         ctx.font = `bold ${nameFontSize}px Arial`;
       }
-      
-      y = wrapText(
-        ctx,
-        fullName,
-        infoX,
-        y,
-        infoW,
-        nameFontSize + 6,
-        2
-      );
+      currentY = wrapText(ctx, fullName, infoX, currentY, fullWidth, nameFontSize + 6, 2);
 
-      // Membership ID inline (label + value on the same line, auto-fit to avoid overlap/cut)
+      // 2. Membership ID (Full width below Name)
       ctx.save();
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
       ctx.fillStyle = ORANGE;
-
       const memberIdLabel = 'Membership ID:';
-      const labelFontSize = 24;
-      const valueFontStart = 28;
-      const valueFontMin = 18;
-      const labelToValueGapPx = 12;
-
-      ctx.font = `bold ${labelFontSize}px Arial`;
-      const memberIdLabelW = ctx.measureText(memberIdLabel).width;
-      const memberIdValueX = infoX + memberIdLabelW + labelToValueGapPx;
-      const memberIdValueW = Math.max(80, infoX + infoW - memberIdValueX);
-
-      const ellipsize = (text: string, maxWidth: number) => {
-        const ellipsis = '…';
-        if (ctx.measureText(text).width <= maxWidth) return text;
-        let t = text;
-        while (t.length > 0 && ctx.measureText(t + ellipsis).width > maxWidth) {
-          t = t.slice(0, -1);
-        }
-        return t.length ? t + ellipsis : ellipsis;
-      };
-
-      // Draw label
-      ctx.font = `bold ${labelFontSize}px Arial`;
-      ctx.fillText(memberIdLabel, infoX, y);
-
-      // Fit value to remaining width by reducing font size; fallback to ellipsis
-      let valueFontSize = valueFontStart;
-      ctx.font = `bold ${valueFontSize}px Arial`;
-      while (valueFontSize > valueFontMin && ctx.measureText(currentMemberId).width > memberIdValueW) {
-        valueFontSize -= 1;
-        ctx.font = `bold ${valueFontSize}px Arial`;
-      }
-      let memberIdToDraw = currentMemberId;
-      if (ctx.measureText(memberIdToDraw).width > memberIdValueW) {
-        memberIdToDraw = ellipsize(memberIdToDraw, memberIdValueW);
-      }
-      ctx.font = `bold ${valueFontSize}px Arial`;
-      ctx.fillText(memberIdToDraw, memberIdValueX, y);
-
+      ctx.font = `bold 22px Arial`;
+      const labelW = ctx.measureText(memberIdLabel).width;
+      ctx.fillText(memberIdLabel, infoX, currentY);
+      
+      ctx.font = `bold 24px Arial`;
+      ctx.fillText(currentMemberId, infoX + labelW + 10, currentY);
       ctx.restore();
+      
+      currentY += 40;
 
-      // advance y (single-line block)
-      y += 42;
-      y += 14; // spacing before stacked fields
+      // 3. QR Code (Moved higher and to the edge)
+      const qrSize = 150; // Reduced size to allow tighter spacing
+      const qrX = canvas.width - qrSize - 50; 
+      const qrY = currentY - 10; 
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+      ctx.strokeStyle = ORANGE;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
 
-      const colGap = 28;
-      const colW = Math.max(150, Math.floor((infoW - colGap) / 2));
-      const col1X = infoX;
-      const col2X = infoX + colW + colGap;
-
-      const labelFont = 'bold 16px Arial';
-      const valueFont = 'bold 22px Arial';
+      // 4. Compact Info (Left of QR code)
+      const compactW = qrX - infoX - 30;
+      const colGap = 20;
+      const colW = (compactW - colGap) / 2;
+      
+      const labelFont = 'bold 15px Arial';
+      const valueFont = 'bold 20px Arial';
       const labelColor = '#6b7280';
       const valueColor = '#111827';
-      // Vertical rhythm tuning (label on top, value below, consistent gaps)
-      const labelLineHeight = 18;
-      const labelToValueGap = 6;
-      const valueLineHeight = 26;
-      const rowGap = 14;
 
-      const stackedField = (
-        x: number,
-        startY: number,
-        label: string,
-        value: string,
-        width: number,
-        maxLines = 1
-      ) => {
-        ctx.save();
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-
+      const drawCompactField = (x: number, y: number, label: string, value: string, w: number) => {
         ctx.fillStyle = labelColor;
         ctx.font = labelFont;
-        ctx.fillText(label.toUpperCase(), x, startY);
-
+        ctx.fillText(label.toUpperCase(), x, y);
         ctx.fillStyle = valueColor;
+        ctx.font = valueFont;
         
-        // Auto-scale font size for field values (like long Ward names or Voter Reg Nos)
-        let fieldValueFontSize = 22;
-        ctx.font = `bold ${fieldValueFontSize}px Arial`;
-        
-        // For single line, scale until it fits width. 
-        // For multi-line, we still scale a bit if the overall text is very long to prevent frame overlap.
-        const limit = maxLines === 1 ? width : width * 1.8; 
-        while (fieldValueFontSize > 12 && ctx.measureText(value).width > limit) {
-          fieldValueFontSize -= 1;
-          ctx.font = `bold ${fieldValueFontSize}px Arial`;
+        // Scale to fit
+        let fs = 20;
+        while (fs > 10 && ctx.measureText(value).width > w) {
+          fs -= 1;
+          ctx.font = `bold ${fs}px Arial`;
         }
+        ctx.fillText(value || '-', x, y + 22);
+        return y + 42;
+      };
+
+      let infoY = currentY;
+      // Row: State & Tel
+      drawCompactField(infoX, infoY, 'State', (formData.state || '').toUpperCase(), colW);
+      drawCompactField(infoX + colW + colGap, infoY, 'Tel', formData.phone, colW);
+      infoY += 52;
+      
+      // Row: LGA & Member Since
+      drawCompactField(infoX, infoY, 'LGA', (formData.lga || '').toUpperCase(), colW);
+      drawCompactField(infoX + colW + colGap, infoY, 'Member Since', formatMonthYear(formData.joinDate), colW);
+      infoY += 52;
+      
+      // 5. Wide Fields (Now follows infoY immediately)
+      currentY = infoY + 5;
+      
+      const finalFullW = canvas.width - infoX - 50;
+      const drawWideField = (label: string, value: string, y: number) => {
+        ctx.fillStyle = labelColor;
+        ctx.font = labelFont;
+        ctx.fillText(label.toUpperCase(), infoX, y);
+        ctx.fillStyle = valueColor;
+        ctx.font = 'bold 22px Arial';
         
-        const valueY = startY + labelLineHeight + labelToValueGap;
-        const endY = wrapText(ctx, value || '-', x, valueY, width, fieldValueFontSize + 4, maxLines);
-
-        ctx.restore();
-        return endY;
+        let fs = 22;
+        while (fs > 12 && ctx.measureText(value).width > finalFullW) {
+          fs -= 1;
+          ctx.font = `bold ${fs}px Arial`;
+        }
+        ctx.fillText(value || '-', infoX, y + 25);
+        return y + 52; // Matching the 52px rhythm of the compact rows
       };
 
-      const stackedRow = (
-        left: { label: string; value: string; maxLines?: number } | null,
-        right: { label: string; value: string; maxLines?: number } | null
-      ) => {
-        const rowStartY = y;
-        const leftEndY = left
-          ? stackedField(col1X, rowStartY, left.label, left.value, colW, left.maxLines ?? 1)
-          : rowStartY;
-        const rightEndY = right
-          ? stackedField(col2X, rowStartY, right.label, right.value, colW, right.maxLines ?? 1)
-          : rowStartY;
-        y = Math.max(leftEndY, rightEndY) + rowGap;
-      };
+      currentY = drawWideField('Ward', (formData.ward || '').toUpperCase(), currentY);
+      drawWideField('Voter Reg No', (formData.voterRegNo || '').toUpperCase(), currentY);
 
-      // Stacked fields (ordered as requested: State → LGA → Ward → Member Since → Voter Reg No)
-      stackedRow(
-        { label: 'State', value: (formData.state || '').toUpperCase(), maxLines: 1 },
-        { label: 'Tel', value: formData.phone, maxLines: 1 }
-      );
-      stackedRow(
-        { label: 'LGA', value: (formData.lga || '').toUpperCase(), maxLines: 2 },
-        { label: 'Member Since', value: formatMonthYear(formData.joinDate), maxLines: 1 }
-      );
-      stackedRow(
-        { label: 'Ward', value: (formData.ward || '').toUpperCase(), maxLines: 2 },
-        { label: 'Voter Reg No', value: (formData.voterRegNo || '').toUpperCase(), maxLines: 2 }
-      );
+      // --- END LAYOUT ---
 
       // Footer stripe
       ctx.fillStyle = GREEN;
