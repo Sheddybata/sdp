@@ -633,16 +633,31 @@ const EMembership: React.FC = () => {
       <Breadcrumbs />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 text-white relative" style={{ backgroundImage: 'url(/emembership.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      <section className="pt-32 pb-16 text-white relative bg-sdp-dark" style={{ backgroundImage: 'url(/emembership.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h1 className="text-5xl font-bold mb-4">E-Membership</h1>
           <p className="text-xl text-white/90">The "Verified" Portal - Join SDP Today</p>
+          <div className="mt-8">
+            <Button asChild className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white font-bold h-12 px-8 rounded-xl text-lg shadow-xl">
+              <a href="https://socialdemocraticparty.app" target="_blank" rel="noopener noreferrer">
+                Go to New Enrollment Portal
+              </a>
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Registration Wizard */}
-      <section className="py-16 bg-gray-50">
+      {/* Registration Wizard (Legacy) */}
+      <section className="py-16 bg-gray-50 opacity-50 pointer-events-none grayscale">
+        <div className="max-w-3xl mx-auto px-6 text-center mb-8">
+          <div className="bg-orange-100 border-l-4 border-orange-500 p-4 mb-8">
+            <p className="text-orange-700 font-bold">
+              NOTICE: This registration form has moved to our new dedicated portal. 
+              Please use the button above to register.
+            </p>
+          </div>
+        </div>
         <div className="max-w-3xl mx-auto px-6">
           <Card>
             <CardHeader>

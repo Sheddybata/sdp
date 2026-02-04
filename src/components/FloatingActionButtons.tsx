@@ -50,16 +50,16 @@ export const FloatingActionButtons: React.FC<FloatingActionButtonsProps> = ({
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
       {isExpanded && (
         <div className="flex flex-col gap-3 mb-2 animate-in slide-in-from-bottom-4 duration-300">
-          <Button
-            onClick={() => {
-              onJoinClick();
-              setIsExpanded(false);
-            }}
-            className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white shadow-xl hover:shadow-2xl h-14 px-6 rounded-full flex items-center gap-3 transition-all transform hover:scale-105"
+          <a
+            href="https://socialdemocraticparty.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsExpanded(false)}
+            className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white shadow-xl hover:shadow-2xl h-14 px-6 rounded-full flex items-center gap-3 transition-all transform hover:scale-105 no-underline"
           >
             <Users className="w-5 h-5" />
             <span className="font-semibold">Join the Party</span>
-          </Button>
+          </a>
           
           <Button
             onClick={() => {

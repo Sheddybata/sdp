@@ -28,7 +28,7 @@ const Contact: React.FC = () => {
       <Breadcrumbs />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 text-white relative" style={{ backgroundImage: 'url(/contact.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      <section className="pt-32 pb-16 text-white relative bg-sdp-dark" style={{ backgroundImage: 'url(/contact.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h1 className="text-5xl font-bold mb-4">Contact Us</h1>

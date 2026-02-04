@@ -206,7 +206,7 @@ const WhoWeAre: React.FC = () => {
       <Breadcrumbs />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 text-white relative" style={{ backgroundImage: 'url(/whoweare.png)', backgroundSize: 'cover', backgroundPosition: 'top', backgroundRepeat: 'no-repeat' }}>
+      <section className="pt-32 pb-16 text-white relative bg-sdp-dark" style={{ backgroundImage: 'url(/whoweare.png)', backgroundSize: 'cover', backgroundPosition: 'top', backgroundRepeat: 'no-repeat' }}>
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h1 className="text-5xl font-bold mb-4">{t('who.title')}</h1>
@@ -643,30 +643,34 @@ const WhoWeAre: React.FC = () => {
               <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
                 <CardHeader>
                   <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-4 border-[#ef8636]/20">
-                    <img 
-                      src="/SenatorWadada.jpg" 
-                      alt="Senator Wadada" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <CardTitle className="text-center">Senator Wadada</CardTitle>
-                  <p className="text-center text-sm text-gray-600">Senator</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 text-center mb-4 leading-relaxed">
-                    Sen. Wadada is currently serving as first-term Senator representing Nasarawa West Senatorial District in the 10th National assembly under the platform of the Social Democratic Party (SDP).
-                  </p>
-                  <Button className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90">View Achievements</Button>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
-                <CardHeader>
-                  <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-4 border-[#1daa62]/20">
-                    <img 
-                      src="/SenatorAkwashiki.jpg" 
-                      alt="Senator Akwashiki" 
-                      className="w-full h-full object-cover"
-                    />
+        <img 
+          src="/SenatorWadada.jpg" 
+          alt="Senator Wadada" 
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <CardTitle className="text-center">Senator Wadada</CardTitle>
+      <p className="text-center text-sm text-gray-600">Senator</p>
+    </CardHeader>
+    <CardContent>
+      <p className="text-sm text-gray-600 text-center mb-4 leading-relaxed">
+        Sen. Wadada is currently serving as first-term Senator representing Nasarawa West Senatorial District in the 10th National assembly under the platform of the Social Democratic Party (SDP).
+      </p>
+      <Button className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90">View Achievements</Button>
+    </CardContent>
+  </Card>
+  <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
+    <CardHeader>
+      <div className="w-32 h-32 rounded-full overflow-hidden mx-auto mb-4 border-4 border-[#1daa62]/20">
+        <img 
+          src="/SenatorAkwashiki.jpg" 
+          alt="Senator Akwashiki" 
+          className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
                   </div>
                   <CardTitle className="text-center">Senator Godiya Akwashiki</CardTitle>
                   <p className="text-center text-sm text-gray-600">Senator</p>

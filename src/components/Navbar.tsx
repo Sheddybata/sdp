@@ -15,13 +15,76 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
     { name: 'Home', path: '/' },
     { name: 'Who We Are', path: '/who-we-are' },
     { name: 'Our Stand', path: '/our-stand' },
-    { name: 'E-Membership', path: '/e-membership' },
+    { name: 'E-Membership', path: 'https://socialdemocraticparty.app', isExternal: true },
     { name: 'Election Center', path: '/election-center' },
     { name: 'Media Room', path: '/media-room' },
     { name: 'Contact', path: '/contact' }
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const renderLink = (link: typeof links[0]) => {
+    if (link.isExternal) {
+      return (
+        <a
+          key={link.path}
+          href={link.path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group"
+        >
+          {link.name}
+          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+        </a>
+      );
+    }
+    return (
+      <Link
+        key={link.path}
+        to={link.path}
+        className={`text-sm text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group ${
+          isActive(link.path) ? 'text-[#ef8636]' : ''
+        }`}
+      >
+        {link.name}
+        {isActive(link.path) && (
+          <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636]"></span>
+        )}
+        <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+      </Link>
+    );
+  };
+
+  const renderMobileLink = (link: typeof links[0]) => {
+    if (link.isExternal) {
+      return (
+        <a
+          key={link.path}
+          href={link.path}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMobileOpen(false)}
+          className="block w-full text-left py-3 px-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5"
+        >
+          {link.name}
+        </a>
+      );
+    }
+    return (
+      <Link
+        key={link.path}
+        to={link.path}
+        onClick={() => setMobileOpen(false)}
+        className={`block w-full text-left py-3 px-4 rounded-lg transition ${
+          isActive(link.path) 
+            ? 'text-[#ef8636] font-semibold bg-[#ef8636]/10' 
+            : 'text-white hover:text-[#ef8636] hover:bg-white/5'
+        }`}
+      >
+        {link.name}
+      </Link>
+    );
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-sdp-dark/95 backdrop-blur-sm shadow-lg border-b border-white/10">
@@ -31,21 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
           <div className="flex items-center gap-8">
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
-              {links.map(link => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`text-sm text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group ${
-                    isActive(link.path) ? 'text-[#ef8636]' : ''
-                  }`}
-                >
-                  {link.name}
-                  {isActive(link.path) && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636]"></span>
-                  )}
-                  <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </Link>
-              ))}
+              {links.map(link => renderLink(link))}
             </div>
             {/* Mobile Menu Button */}
             <button 
@@ -76,20 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
       </div>
       {mobileOpen && (
         <div className="lg:hidden bg-sdp-dark/98 backdrop-blur-md border-t border-white/10 px-6 py-4 space-y-3">
-          {links.map(link => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setMobileOpen(false)}
-              className={`block w-full text-left py-3 px-4 rounded-lg transition ${
-                isActive(link.path) 
-                  ? 'text-[#ef8636] font-semibold bg-[#ef8636]/10' 
-                  : 'text-white hover:text-[#ef8636] hover:bg-white/5'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+          {links.map(link => renderMobileLink(link))}
           <button 
             onClick={() => {
               onDonateClick();

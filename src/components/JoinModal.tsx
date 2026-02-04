@@ -74,7 +74,7 @@ export const JoinModal: React.FC<JoinModalProps> = ({ isOpen, onClose }) => {
             </form>
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-500">
-                Want a formal ID card? <a href="/e-membership" className="text-[#01a85a] font-bold hover:underline">Register for E-Membership</a>
+                Want a formal ID card? <a href="https://socialdemocraticparty.app" target="_blank" rel="noopener noreferrer" className="text-[#01a85a] font-bold hover:underline">Register for E-Membership</a>
               </p>
             </div>
           </>

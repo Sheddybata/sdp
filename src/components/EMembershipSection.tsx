@@ -62,14 +62,14 @@ export const EMembershipSection: React.FC = () => {
 
             <div className="flex flex-wrap gap-4">
               <Button asChild className="h-14 px-10 bg-sdp-green hover:bg-sdp-green/90 text-white font-bold rounded-xl shadow-xl shadow-sdp-green/20 text-lg">
-                <Link to="/e-membership">
+                <a href="https://socialdemocraticparty.app" target="_blank" rel="noopener noreferrer">
                   Register Now
-                </Link>
+                </a>
               </Button>
               <Button asChild variant="outline" className="h-14 px-10 border-2 border-gray-200 hover:border-sdp-orange hover:text-sdp-orange font-bold rounded-xl text-lg">
-                <Link to="/e-membership">
+                <a href="https://socialdemocraticparty.app" target="_blank" rel="noopener noreferrer">
                   Verify Membership
-                </Link>
+                </a>
               </Button>
             </div>
           </div>
@@ -77,11 +77,13 @@ export const EMembershipSection: React.FC = () => {
           {/* Right Column: Visual Preview */}
           <div className="w-full lg:w-1/2 relative">
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
-              <img 
-                src="/emembership.png" 
-                alt="SDP E-Membership Portal" 
-                className="w-full h-auto object-cover"
-              />
+            <img 
+              src="/emembership.png" 
+              alt="SDP E-Membership Portal" 
+              className="w-full h-auto object-cover"
+              loading="lazy"
+              decoding="async"
+            />
               <div className="absolute inset-0 bg-gradient-to-t from-sdp-dark/60 via-transparent to-transparent"></div>
               
               {/* Floating Badge Mockup */}

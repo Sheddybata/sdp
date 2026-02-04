@@ -87,11 +87,14 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
         <div className="max-w-3xl">
           {/* Logo and Party Name */}
           <div className="flex items-center gap-3 mb-8 animate-fade-in-up">
-            <img 
-              src="/sdplogo.jpg" 
-              alt="SDP Logo" 
-              className="w-16 h-16 object-contain drop-shadow-lg"
-              onError={(e) => {
+        <img 
+          src="/sdplogo.jpg" 
+          alt="SDP Logo" 
+          className="w-16 h-16 object-contain drop-shadow-lg"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.style.display = 'none';
                 if (!target.nextElementSibling) {
@@ -129,15 +132,17 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
           
           {/* CTA Buttons */}
           <div className="flex flex-wrap gap-4 mb-12">
-            <button 
-              onClick={onJoinClick} 
+            <a 
+              href="https://socialdemocraticparty.app"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group px-6 py-3 bg-[#ef8636] hover:bg-[#ef8636]/90 text-white text-base font-semibold rounded-xl transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center gap-2"
             >
               <span>{t('hero.join')}</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </button>
+            </a>
             <button 
               onClick={onDonateClick} 
               className="group px-6 py-3 bg-[#1daa62] hover:bg-[#1daa62]/90 text-white text-base font-semibold rounded-xl transition-all transform hover:scale-105 shadow-xl hover:shadow-2xl flex items-center gap-2"
