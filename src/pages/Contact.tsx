@@ -54,9 +54,9 @@ const Contact: React.FC = () => {
                   <div>
                     <p className="font-semibold">Address</p>
                     <p className="text-gray-600">
-                      SDP National Secretariat<br />
-                      Plot 1234, Central Business District<br />
-                      Abuja, FCT, Nigeria
+                      National Secretariat<br />
+                      17 Nairobi Street, Wuse II<br />
+                      Abuja, Nigeria
                     </p>
                   </div>
                 </div>
@@ -71,7 +71,7 @@ const Contact: React.FC = () => {
                   <Mail className="w-5 h-5 text-[#ef8636] mt-1" />
                   <div>
                     <p className="font-semibold">Email</p>
-                    <p className="text-gray-600">info@sdp.org.ng</p>
+                    <p className="text-gray-600">Chairman.nhq@sdpng.ng</p>
                   </div>
                 </div>
                 <div>
@@ -93,7 +93,7 @@ const Contact: React.FC = () => {
                   <div className="text-center">
                     <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">Google Maps embed will display here</p>
-                    <p className="text-sm text-gray-500 mt-2">SDP National Secretariat, Abuja</p>
+                    <p className="text-sm text-gray-500 mt-2">National Secretariat, 17 Nairobi Street, Wuse II, Abuja</p>
                   </div>
                 </div>
               </CardContent>

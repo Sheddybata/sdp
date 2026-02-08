@@ -110,6 +110,8 @@ export const Hero: React.FC<HeroProps> = ({ onJoinClick, onDonateClick, supporte
             </span>
           </div>
           
+          {/* Welcome line */}
+          <p className="text-sm md:text-base text-white/90 mb-4 font-medium animate-fade-in-up">{t('hero.welcome')}</p>
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full mb-6 border border-white/20 animate-fade-in-up-delay">
             <span className="w-2 h-2 bg-[#1daa62] rounded-full animate-pulse"></span>

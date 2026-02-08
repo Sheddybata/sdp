@@ -398,7 +398,7 @@ const WhoWeAre: React.FC = () => {
       </section>
 
       {/* Party Structure */}
-      <section className="py-16 bg-white">
+      <section id="structure" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-sdp-dark">{t('who.structure.title')}</h2>
@@ -446,7 +446,7 @@ const WhoWeAre: React.FC = () => {
       </section>
 
       {/* Original Manifesto */}
-      <section className="py-16 bg-gray-50">
+      <section id="manifesto" className="py-16 bg-gray-50 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-2 bg-[#ef8636]/10 text-[#ef8636] rounded-full text-sm font-semibold mb-4">
@@ -478,6 +478,10 @@ const WhoWeAre: React.FC = () => {
                 </Card>
               );
             })}
+          </div>
+          <div id="abridged-manifesto" className="mt-8 pt-8 border-t border-gray-200 scroll-mt-24">
+            <h3 className="text-xl font-bold text-sdp-dark mb-2">Abridged Manifesto</h3>
+            <p className="text-gray-600">A shorter summary of our manifesto is available on request from the National Secretariat.</p>
           </div>
         </div>
       </section>
@@ -580,7 +584,7 @@ const WhoWeAre: React.FC = () => {
       </section>
 
       {/* Current Leadership Structure */}
-      <section className="py-16 bg-gray-50">
+      <section id="nwc" className="py-16 bg-gray-50 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-sdp-dark">Current Leadership Structure</h2>
@@ -599,11 +603,11 @@ const WhoWeAre: React.FC = () => {
                   <div className="w-24 h-24 bg-[#ef8636]/10 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <Users className="w-12 h-12 text-[#ef8636]" />
                   </div>
-                  <CardTitle className="text-center">Prince Adebayo</CardTitle>
-                  <p className="text-center text-sm text-gray-600">National Chairman</p>
+                  <CardTitle className="text-center">{t('who.leadership.chairman')}</CardTitle>
+                  <p className="text-center text-sm text-gray-600">{t('who.leadership.chairmanTitle')}</p>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 text-center">Leading SDP's vision for good governance and national development.</p>
+                  <p className="text-sm text-gray-600 text-center">{t('who.leadership.chairmanDesc')}</p>
                 </CardContent>
               </Card>
               <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
@@ -684,11 +688,24 @@ const WhoWeAre: React.FC = () => {
               </Card>
             </div>
           </div>
+
+          {/* National Zonal Committees */}
+          <div className="pt-8 border-t border-gray-200">
+            <h3 className="text-2xl font-bold text-sdp-dark mb-6">National Zonal Committees</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div id="zonal-sw" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">South West (SW) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+              <div id="zonal-se" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">South East (SE) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+              <div id="zonal-ss" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">South South (SS) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+              <div id="zonal-nc" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">North Central (NC) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+              <div id="zonal-ne" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">North East (NE) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+              <div id="zonal-nw" className="scroll-mt-24 p-4 bg-white rounded-lg shadow"><h4 className="font-semibold text-sdp-dark">North West (NW) National Zonal Committee</h4><p className="text-sm text-gray-600 mt-1">Contact the National Secretariat for zonal committee details.</p></div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Constitution */}
-      <section className="py-16 bg-white">
+      <section id="constitution" className="py-16 bg-white scroll-mt-24">
         <div className="max-w-4xl mx-auto px-6">
           <Card className="border-0 shadow-xl">
             <CardHeader>

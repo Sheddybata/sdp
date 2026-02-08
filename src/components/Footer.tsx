@@ -57,9 +57,9 @@ export const Footer: React.FC<FooterProps> = ({ showPastMembers = true }) => {
       <div className="max-w-7xl mx-auto px-6">
         {showPastMembers && (
           <>
-            {/* Past Members Section */}
-            <div className="mb-16">
-              <h3 className="text-2xl font-bold mb-8 text-center">{t('footer.pastMembers')}</h3>
+            {/* Prominent Nigerians - white background section */}
+            <div className="mb-16 -mx-6 md:-mx-8 lg:-mx-12 px-6 md:px-8 lg:px-12 py-12 bg-white">
+              <h3 className="text-2xl font-bold mb-8 text-center text-sdp-dark">{t('footer.pastMembers')}</h3>
               <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-9 gap-4">
                 {pastMembers.map((member) => {
                   const imagePath = `/past members/${member}`;
@@ -70,7 +70,7 @@ export const Footer: React.FC<FooterProps> = ({ showPastMembers = true }) => {
                       className="flex flex-col items-center group cursor-pointer"
                       title={displayName}
                     >
-                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white/20 group-hover:border-[#ef8636] transition-all duration-300 mb-2">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-[#ef8636] transition-all duration-300 mb-2">
                         <img
                           src={imagePath}
                           alt={displayName}
@@ -81,7 +81,7 @@ export const Footer: React.FC<FooterProps> = ({ showPastMembers = true }) => {
                           }}
                         />
                       </div>
-                      <p className="text-xs text-gray-400 text-center group-hover:text-[#ef8636] transition-colors line-clamp-2">
+                      <p className="text-xs text-gray-600 text-center group-hover:text-[#ef8636] transition-colors line-clamp-2">
                         {displayName}
                       </p>
                     </div>
@@ -107,6 +107,10 @@ export const Footer: React.FC<FooterProps> = ({ showPastMembers = true }) => {
               <span className="font-bold text-xl">Social Democratic Party</span>
             </div>
             <p className="text-gray-400">{t('footer.tagline')}</p>
+            <p className="text-gray-400 text-sm mt-3">
+              National Secretariat, 17 Nairobi Street, Wuse II, Abuja.<br />
+              <a href="mailto:Chairman.nhq@sdpng.ng" className="text-[#ef8636] hover:underline">Chairman.nhq@sdpng.ng</a>
+            </p>
           </div>
           <div>
             <h4 className="font-bold text-lg mb-4">{t('footer.quickLinks')}</h4>

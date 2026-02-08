@@ -168,7 +168,21 @@ const HomePage: React.FC = () => {
         />
       </section>
 
-      {/* Policy Tracker Widget */}
+      {/* How Better Government - Compact CTA then full section */}
+      <section className="py-8 md:py-10 bg-gradient-to-r from-white via-[#1daa62]/5 to-[#ef8636]/5 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-sdp-dark mb-1">{t('tracker.title')}</h2>
+            <p className="text-sm md:text-base text-gray-600">{t('tracker.subtitle')}</p>
+          </div>
+          <Button
+            onClick={() => document.getElementById('tracker')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all shrink-0 border-0"
+          >
+            {t('tracker.button')} →
+          </Button>
+        </div>
+      </section>
       <PolicyTracker />
 
       {/* Presidential Candidate Spotlight - Hidden until after primaries */}
