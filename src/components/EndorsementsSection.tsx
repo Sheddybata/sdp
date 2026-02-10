@@ -8,7 +8,6 @@ interface Endorsement {
   type: 'organization' | 'individual';
   role?: string;
   logo?: string;
-  quote?: string;
 }
 
 // Helper function to get image path from endorsement name
@@ -32,56 +31,47 @@ const endorsements: Endorsement[] = [
   {
     name: 'Nigerian Labour Congress',
     type: 'organization',
-    role: 'National Workers Union',
-    quote: 'SDP represents the interests of working Nigerians.'
+    role: 'National Workers Union'
   },
   {
     name: 'National Association of Nigerian Students',
     type: 'organization',
-    role: 'Student Union',
-    quote: 'SDP champions youth inclusion and education reform.'
+    role: 'Student Union'
   },
   {
     name: 'Nigerian Medical Association',
     type: 'organization',
-    role: 'Professional Association',
-    quote: 'SDP\'s healthcare policies align with our vision for universal healthcare.'
+    role: 'Professional Association'
   },
   {
     name: 'All Farmers Association of Nigeria',
     type: 'organization',
-    role: 'Agricultural Union',
-    quote: 'SDP understands the needs of Nigerian farmers.'
+    role: 'Agricultural Union'
   },
   {
     name: 'Chartered Institute of Bankers of Nigeria',
     type: 'organization',
-    role: 'Professional Body',
-    quote: 'SDP\'s economic policies will stabilize the financial sector.'
+    role: 'Professional Body'
   },
   {
     name: 'Nigerian Bar Association',
     type: 'organization',
-    role: 'Legal Professional Body',
-    quote: 'SDP is committed to the rule of law and judicial independence.'
+    role: 'Legal Professional Body'
   },
   {
     name: 'Dr. Ngozi Okonjo-Iweala',
     type: 'individual',
-    role: 'Former Finance Minister',
-    quote: 'SDP\'s economic vision aligns with sustainable development goals.'
+    role: 'Former Finance Minister'
   },
   {
     name: 'Prof. Wole Soyinka',
     type: 'individual',
-    role: 'Nobel Laureate',
-    quote: 'SDP represents a genuine alternative for Nigeria\'s future.'
+    role: 'Nobel Laureate'
   },
   {
     name: 'Alhaji Atiku Abubakar',
     type: 'individual',
-    role: 'Former Vice President',
-    quote: 'SDP has a proven track record of good governance.'
+    role: 'Former Vice President'
   }
 ];
 
@@ -148,11 +138,6 @@ export const EndorsementsSection: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  {endorsement.quote && (
-                    <p className="text-gray-600 text-sm leading-relaxed italic">
-                      "{endorsement.quote}"
-                    </p>
-                  )}
                 </CardContent>
               </Card>
             );
