@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Hero } from '@/components/Hero';
@@ -21,6 +21,7 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useMemberCount } from '@/hooks/useMemberCount';
+import { stateChairmen } from '@/data/state-chairmen';
 
 // Why Card Component
 const WhyCard: React.FC<{
@@ -140,9 +141,19 @@ const HomePage: React.FC = () => {
   const [donateOpen, setDonateOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [candidateImageError, setCandidateImageError] = useState(false);
+  const [chairmanSearch, setChairmanSearch] = useState('');
   
   // Next general election date (February 2027)
   const electionDate = new Date('2027-02-25T08:00:00');
+  const matchedChairmen = useMemo(() => {
+    const query = chairmanSearch.trim().toLowerCase();
+    if (!query) return [];
+    return stateChairmen.filter((entry) => (
+      entry.state.toLowerCase().includes(query) ||
+      entry.chairman.toLowerCase().includes(query) ||
+      entry.zone.toLowerCase().includes(query)
+    ));
+  }, [chairmanSearch]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -327,6 +338,8 @@ const HomePage: React.FC = () => {
                   type="text" 
                   placeholder={t('action.search')} 
                   className="pl-12 bg-white/20 border-white/30 text-white placeholder:text-gray-300 h-14 text-lg focus:bg-white/30 focus:border-white/50"
+                  value={chairmanSearch}
+                  onChange={(e) => setChairmanSearch(e.target.value)}
                 />
               </div>
               <Button className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white h-14 px-8 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all">
@@ -334,6 +347,25 @@ const HomePage: React.FC = () => {
                 {t('action.search')}
               </Button>
             </div>
+            {chairmanSearch.trim() && (
+              <div className="mt-6 space-y-3">
+                {matchedChairmen.length > 0 ? (
+                  matchedChairmen.slice(0, 6).map((entry) => (
+                    <div
+                      key={entry.state}
+                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl bg-white/10 border border-white/20 px-4 py-3"
+                    >
+                      <p className="text-sm sm:text-base text-white">
+                        <span className="font-semibold">{entry.state}:</span> {entry.chairman}
+                      </p>
+                      <p className="text-sm text-[#1daa62] font-semibold">{entry.phone}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-300">No chairman record found for this search.</p>
+                )}
+              </div>
+            )}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm text-gray-300">
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-[#1daa62]" fill="currentColor" viewBox="0 0 20 20">

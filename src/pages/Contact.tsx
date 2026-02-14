@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -8,15 +8,23 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react';
+import { stateChairmen } from '@/data/state-chairmen';
 
 const Contact: React.FC = () => {
-  const states = [
-    'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
-    'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT', 'Gombe',
-    'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara',
-    'Lagos', 'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau',
-    'Rivers', 'Sokoto', 'Taraba', 'Yobe', 'Zamfara'
-  ];
+  const [directorySearch, setDirectorySearch] = useState('');
+
+  const filteredChairmen = useMemo(() => {
+    const query = directorySearch.trim().toLowerCase();
+    if (!query) {
+      return stateChairmen;
+    }
+
+    return stateChairmen.filter((entry) => (
+      entry.state.toLowerCase().includes(query) ||
+      entry.chairman.toLowerCase().includes(query) ||
+      entry.zone.toLowerCase().includes(query)
+    ));
+  }, [directorySearch]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -114,31 +122,40 @@ const Contact: React.FC = () => {
             <Input 
               placeholder="Search by state or chairman name..." 
               className="max-w-md mx-auto"
+              value={directorySearch}
+              onChange={(e) => setDirectorySearch(e.target.value)}
             />
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
-            {states.slice(0, 12).map((state, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+            {filteredChairmen.map((entry) => (
+              <Card key={entry.state} className="hover:shadow-lg transition-shadow">
                 <CardContent className="p-4">
-                  <h3 className="font-bold text-sdp-dark mb-2">{state}</h3>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="font-bold text-sdp-dark">{entry.state}</h3>
+                    <span className="text-xs font-semibold px-2 py-1 rounded-full bg-[#ef8636]/10 text-[#ef8636]">
+                      {entry.zone} Zone
+                    </span>
+                  </div>
                   <p className="text-sm text-gray-600 mb-1">
-                    <span className="font-semibold">Chairman:</span> [Name]
+                    <span className="font-semibold">Chairman:</span> {entry.chairman}
                   </p>
                   <p className="text-sm text-gray-600 mb-1">
                     <Phone className="w-3 h-3 inline mr-1" />
-                    +234 XXX XXX XXXX
+                    {entry.phone}
                   </p>
                   <p className="text-sm text-gray-600">
                     <Mail className="w-3 h-3 inline mr-1" />
-                    {state.toLowerCase().replace(' ', '')}@sdp.org.ng
+                    {entry.state.toLowerCase().replace(/\s+/g, '')}@sdp.org.ng
                   </p>
                 </CardContent>
               </Card>
             ))}
           </div>
           <div className="text-center mt-6">
-            <Button variant="outline">View All 36 States + FCT</Button>
+            <Button variant="outline" disabled>
+              Showing {filteredChairmen.length} of {stateChairmen.length} entries
+            </Button>
           </div>
         </div>
       </section>
