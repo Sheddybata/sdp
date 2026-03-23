@@ -479,6 +479,17 @@ const WhoWeAre: React.FC = () => {
               );
             })}
           </div>
+          <div className="mt-8 flex justify-center">
+            <a
+              href="/SDP Manifesto 2018.pdf"
+              download="SDP Manifesto 2018.pdf"
+            >
+              <Button className="bg-[#1daa62] hover:bg-[#1daa62]/90">
+                <Download className="w-4 h-4 mr-2" />
+                Download Manifesto (PDF)
+              </Button>
+            </a>
+          </div>
           <div id="abridged-manifesto" className="mt-8 pt-8 border-t border-gray-200 scroll-mt-24">
             <h3 className="text-xl font-bold text-sdp-dark mb-2">Abridged Manifesto</h3>
             <p className="text-gray-600">A shorter summary of our manifesto is available on request from the National Secretariat.</p>
@@ -593,47 +604,36 @@ const WhoWeAre: React.FC = () => {
           
           {/* NWC */}
           <div className="mb-12">
-            <div className="flex items-center gap-3 mb-6">
-              <Users className="w-8 h-8 text-[#ef8636]" />
-              <h3 className="text-2xl font-bold text-sdp-dark">National Working Committee (NWC)</h3>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-[#ef8636]/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-[#ef8636]" />
-                  </div>
-                  <CardTitle className="text-center">{t('who.leadership.chairman')}</CardTitle>
-                  <p className="text-center text-sm text-gray-600">{t('who.leadership.chairmanTitle')}</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 text-center">{t('who.leadership.chairmanDesc')}</p>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-[#1daa62]/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-[#1daa62]" />
-                  </div>
-                  <CardTitle className="text-center">Secretary</CardTitle>
-                  <p className="text-center text-sm text-gray-600">National Secretary</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 text-center">Overseeing party administration and coordination.</p>
-                </CardContent>
-              </Card>
-              <Card className="hover:shadow-xl transition-shadow border-0 shadow-lg">
-                <CardHeader>
-                  <div className="w-24 h-24 bg-[#ef8636]/10 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <Users className="w-12 h-12 text-[#ef8636]" />
-                  </div>
-                  <CardTitle className="text-center">NWC Members</CardTitle>
-                  <p className="text-center text-sm text-gray-600">Committee Members</p>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-gray-600 text-center">Dedicated leaders working for Nigeria's progress.</p>
-                </CardContent>
-              </Card>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[
+                { title: 'National Chairman', name: 'Dr. Sadiq Umar Abubakar Gombe', image: '/leaders/National Chairman-1.jpeg' },
+                { title: 'Deputy Chairman, South', name: 'Sen. Ugochukwu Uba', image: '/leaders/SenUgochukwu Uba.jpeg' },
+                { title: 'National Secretary', name: 'Dr. Olu Agunloye', image: '/leaders/drolu.jpg' },
+                { title: 'National Organizing Secretary', name: 'Barr. Joseph Achili Abu', image: '/leaders/Barr. Joseph Achili Abu.jpeg' },
+                { title: 'National Financial Secretary', name: 'Mr. Bello Ado Huseni', image: '/leaders/Mr. Bello Ado Huseni.jpeg' },
+                { title: 'National Treasurer', name: 'Hajia Maggie Marriam', image: '/leaders/National Treasurer.jpeg' },
+                { title: 'National Publicity Secretary', name: 'Araba Rufus Aiyenigba (AFP)', image: '/leaders/Araba Rufus Aiyenigba (AFP).jpeg' },
+                { title: 'National Legal Adviser', name: 'Barr. Aderemi Abimbola', image: '/leaders/Barr. Aderemi Abimbola.jpeg' },
+                { title: 'National Women Leader/Speaker Women Parliament', name: 'Hajiya. Sa’adatu Abdullahi', image: '/leaders/Hajiya. Sa’adatu Abdullahi.jpeg' },
+                { title: 'National Labour and Civil Secretary', name: 'Mrs. Rosemary A. Effiong', image: '/leaders/Mrs. Rosemary A. Effiong.jpeg' },
+                { title: 'National Leader PwD', name: 'Chief Leland Alabi', image: '/leaders/Chief Leland Alabi.jpeg' },
+              ].map((leader) => (
+                <Card key={`${leader.title}-${leader.name}`} className="hover:shadow-xl transition-shadow border-0 shadow-lg">
+                  <CardHeader>
+                    <div className="w-28 h-28 rounded-full overflow-hidden mx-auto mb-4 border-4 border-[#ef8636]/20 bg-gray-100">
+                      <img
+                        src={leader.image}
+                        alt={leader.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <CardTitle className="text-center text-lg">{leader.name}</CardTitle>
+                    <p className="text-center text-sm text-gray-600">{leader.title}</p>
+                  </CardHeader>
+                </Card>
+              ))}
             </div>
           </div>
 

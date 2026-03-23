@@ -16,12 +16,12 @@ type NavLink = {
 };
 
 type NavItem = NavLink & {
-  children?: { name: string; path: string }[];
+  children?: { name: string; path: string; isExternal?: boolean; download?: string }[];
 };
 
 const sdpDocumentChildren = [
   { name: 'SDP Constitution', path: '/who-we-are#constitution' },
-  { name: 'SDP Manifesto', path: '/who-we-are#manifesto' },
+  { name: 'SDP Manifesto', path: '/SDP Manifesto 2018.pdf', isExternal: true, download: 'SDP Manifesto 2018.pdf' },
   { name: 'Abridged Manifesto', path: '/who-we-are#abridged-manifesto' },
 ];
 
@@ -51,12 +51,12 @@ const navItems: NavItem[] = [
 export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, setActiveSection }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const navLinksRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (navLinksRef.current && !navLinksRef.current.contains(e.target as Node)) {
         setOpenDropdown(null);
       }
     };
@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
     if (item.isExternal) {
       return (
         <a
-          key={item.path}
+          key={`${item.name}-${item.path}`}
           href={item.path}
           target="_blank"
           rel="noopener noreferrer"
@@ -90,7 +90,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
 
     if (hasChildren) {
       return (
-        <div key={item.name} className="relative flex-shrink-0" ref={dropdownRef}>
+        <div key={item.name} className="relative flex-shrink-0">
           <button
             onClick={() => setOpenDropdown(isOpen ? null : item.name)}
             className={`text-xs text-white hover:text-[#ef8636] transition-all duration-300 font-medium flex items-center gap-0.5 whitespace-nowrap ${
@@ -101,17 +101,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
             <ChevronDown className={`w-3 h-3 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </button>
           {isOpen && (
-            <div className="absolute top-full left-0 mt-1 py-2 min-w-[200px] bg-sdp-dark/98 backdrop-blur-md border border-white/10 rounded-lg shadow-xl z-50">
-              {item.children!.map((child) => (
-                <Link
-                  key={child.path}
-                  to={child.path}
-                  onClick={() => setOpenDropdown(null)}
-                  className="block px-4 py-2.5 text-sm text-white hover:text-[#ef8636] hover:bg-white/5 transition"
-                >
-                  {child.name}
-                </Link>
-              ))}
+            <div className="absolute top-full left-0 mt-1 py-2 min-w-[200px] bg-sdp-dark border border-white/10 rounded-lg shadow-xl z-50">
+              {item.children!.map((child) =>
+                child.isExternal ? (
+                  <a
+                    key={`${child.name}-${child.path}`}
+                    href={child.path}
+                    download={child.download}
+                    onClick={() => setOpenDropdown(null)}
+                    className="block px-4 py-2.5 text-sm text-white hover:text-[#ef8636] hover:bg-white/5 transition"
+                  >
+                    {child.name}
+                  </a>
+                ) : (
+                  <Link
+                    key={`${child.name}-${child.path}`}
+                    to={child.path}
+                    onClick={() => setOpenDropdown(null)}
+                    className="block px-4 py-2.5 text-sm text-white hover:text-[#ef8636] hover:bg-white/5 transition"
+                  >
+                    {child.name}
+                  </Link>
+                )
+              )}
             </div>
           )}
         </div>
@@ -120,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
 
     return (
       <Link
-        key={item.path}
+        key={`${item.name}-${item.path}`}
         to={item.path}
         className={`text-xs text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group flex-shrink-0 whitespace-nowrap ${
           isActive(item.path) ? 'text-[#ef8636]' : ''
@@ -141,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
     if (item.isExternal) {
       return (
         <a
-          key={item.path}
+          key={`${item.name}-${item.path}`}
           href={item.path}
           target="_blank"
           rel="noopener noreferrer"
@@ -157,23 +169,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
       return (
         <div key={item.name} className="space-y-1">
           <div className="py-2 px-4 text-white/80 text-sm font-medium">{item.name}</div>
-          {item.children!.map((child) => (
-            <Link
-              key={child.path}
-              to={child.path}
-              onClick={() => setMobileOpen(false)}
-              className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5 text-sm"
-            >
-              {child.name}
-            </Link>
-          ))}
+          {item.children!.map((child) =>
+            child.isExternal ? (
+              <a
+                key={`${child.name}-${child.path}`}
+                href={child.path}
+                download={child.download}
+                onClick={() => setMobileOpen(false)}
+                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5 text-sm"
+              >
+                {child.name}
+              </a>
+            ) : (
+              <Link
+                key={`${child.name}-${child.path}`}
+                to={child.path}
+                onClick={() => setMobileOpen(false)}
+                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5 text-sm"
+              >
+                {child.name}
+              </Link>
+            )
+          )}
         </div>
       );
     }
 
     return (
       <Link
-        key={item.path}
+        key={`${item.name}-${item.path}`}
         to={item.path}
         onClick={() => setMobileOpen(false)}
         className={`block w-full text-left py-3 px-4 rounded-lg transition ${
@@ -193,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
         <div className="flex items-center justify-between gap-2">
           {/* Left - Nav links (tablet and up: single line) */}
           <div className="flex items-center min-w-0 flex-1">
-            <div className="hidden md:flex items-center gap-2 lg:gap-3 flex-nowrap whitespace-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-0.5 -mx-1 px-1">
+            <div ref={navLinksRef} className="hidden md:flex items-center gap-2 lg:gap-3 flex-nowrap whitespace-nowrap overflow-visible py-0.5 -mx-1 px-1">
               {navItems.map((item) => renderLink(item))}
             </div>
             <button
@@ -224,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden bg-sdp-dark/98 backdrop-blur-md border-t border-white/10 px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
+        <div className="md:hidden bg-sdp-dark border-t border-white/10 px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
           {navItems.map((item) => renderMobileLink(item))}
           <button
             onClick={() => {

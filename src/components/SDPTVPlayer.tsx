@@ -154,7 +154,7 @@ export const SDPTVPlayer: React.FC = () => {
       playerRef.current = new window.YT.Player('youtube-player', {
         videoId: videoId,
         playerVars: {
-          autoplay: 1,
+          autoplay: 0,
           controls: 1,
           rel: 0,
           modestbranding: 1,
@@ -172,8 +172,7 @@ export const SDPTVPlayer: React.FC = () => {
   };
 
   const onPlayerReady = (event: any) => {
-    event.target.playVideo();
-    setIsPlaying(true);
+    setIsPlaying(false);
   };
 
   const onPlayerStateChange = (event: any) => {
@@ -187,8 +186,9 @@ export const SDPTVPlayer: React.FC = () => {
   };
 
   useEffect(() => {
-    if (playerRef.current && playerRef.current.loadVideoById) {
-      playerRef.current.loadVideoById(videos[currentIndex].id);
+    if (playerRef.current && playerRef.current.cueVideoById) {
+      playerRef.current.cueVideoById(videos[currentIndex].id);
+      setIsPlaying(false);
     }
   }, [currentIndex]);
 
