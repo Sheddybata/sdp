@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -9,9 +10,21 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, Video, Shield, Upload } from 'lucide-react';
+import { FileText, Video, Shield, Upload, Newspaper } from 'lucide-react';
+import { ACTIVITIES } from '@/data/activities';
+
+const VALID_TABS = ['press', 'tv', 'activities', 'whistleblower'] as const;
 
 const MediaRoom: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = useMemo(() => {
+    const t = searchParams.get('tab');
+    return t && VALID_TABS.includes(t as (typeof VALID_TABS)[number]) ? t : 'press';
+  }, [searchParams]);
+
+  const setTab = (value: string) => {
+    setSearchParams({ tab: value }, { replace: true });
+  };
   const [whistleblowerData, setWhistleblowerData] = useState({
     report: '',
     category: '',
@@ -19,6 +32,50 @@ const MediaRoom: React.FC = () => {
   });
 
   const pressReleases = [
+    {
+      title: 'SDP National Chairman Calls for Unity Ahead of 2027 Elections',
+      date: 'Saturday, November 15, 2025',
+      author: 'National Publicity Secretary',
+      body: `The National Chairman of the Social Democratic Party (SDP), in a passionate address to party members at the National Headquarters in Abuja, called for unity and collective action ahead of the 2027 general elections.
+
+Speaking at the party's quarterly National Executive Committee (NEC) meeting, the Chairman emphasized that the SDP remains the only viable alternative to the current political establishment, noting that Nigerians are yearning for a party that truly represents their interests.
+
+"We must put aside our personal ambitions and internal disagreements. The people of Nigeria are watching, and they need us to be united, focused, and ready to offer them the leadership they deserve," the Chairman stated.
+
+The NEC meeting, which was attended by representatives from all 36 states and the FCT, also discussed strategies for grassroots mobilization, voter registration drives, and the party's manifesto review process.
+
+Key resolutions from the meeting include the establishment of a 2027 Election Planning Committee, the launch of a nationwide membership drive, and the creation of a Youth Engagement Task Force to attract young Nigerians to the party.`
+    },
+    {
+      title: 'SDP Launches Nationwide Youth Empowerment Programme',
+      date: 'Saturday, November 8, 2025',
+      author: 'National Publicity Secretary',
+      body: `The Social Democratic Party (SDP) has officially launched its Nationwide Youth Empowerment Programme (NYEP), a comprehensive initiative designed to equip young Nigerians between the ages of 18 and 35 with practical skills for economic independence.
+
+The programme, which was inaugurated at a colourful ceremony in Lagos, will provide free training in digital skills, entrepreneurship, agriculture, and vocational trades across all six geopolitical zones of Nigeria.
+
+Speaking at the launch, the SDP National Secretary highlighted that Nigeria's youth bulge represents both a challenge and an opportunity. "Over 60% of our population is under 35. If we fail to invest in their future, we fail as a nation. The SDP believes in action, not just promises," he said.
+
+The first phase of the programme targets 10,000 young Nigerians across 774 local government areas, with plans to scale up to 100,000 beneficiaries by the end of 2026.
+
+Registration for the programme is now open through the SDP state offices nationwide. Participants will receive training materials, mentorship from industry professionals, and seed funding for the most promising business plans.`
+    },
+    {
+      title: 'NWC Ratifies New Party Constitution Amendments',
+      date: 'Saturday, October 25, 2025',
+      author: 'National Publicity Secretary',
+      body: `The National Working Committee (NWC) of the Social Democratic Party has ratified a series of amendments to the party's constitution following months of consultations with stakeholders across the country.
+
+The amendments, which were unanimously approved at an emergency NWC session in Abuja, focus on three key areas: strengthening internal democracy, improving financial transparency, and enhancing the role of women and youth in party governance.
+
+Among the most significant changes is the introduction of a mandatory 35% affirmative action quota for women in all party positions, from the ward level up to the national executive. The NWC also approved a new provision requiring all party financial records to be audited quarterly and made available to members upon request.
+
+Another landmark amendment establishes a formal dispute resolution mechanism to handle intra-party conflicts, replacing the previous ad-hoc approach that often led to prolonged disagreements and factional disputes.
+
+"These amendments reflect the core values of our party — social justice, equity, and transparency. We are not just talking about good governance; we are practising it within our own ranks," said a member of the Constitution Review Committee.
+
+The amended constitution will take effect after ratification by at least two-thirds of the state chapters at the next National Convention scheduled for early 2026.`
+    },
     {
       title: 'SDP Condemns Fuel Price Hike, Proposes Alternative Solutions',
       date: '2025-01-15',
@@ -64,7 +121,10 @@ const MediaRoom: React.FC = () => {
       <Breadcrumbs />
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 text-white relative bg-sdp-dark" style={{ backgroundImage: 'url(/mediaroom.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      <section
+        className="pt-28 pb-12 sm:pt-32 sm:pb-16 text-white relative bg-sdp-dark"
+        style={{ backgroundImage: 'url(/mediaroom.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+      >
         <div className="absolute inset-0 bg-black/40"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <h1 className="text-5xl font-bold mb-4">Media Room</h1>
@@ -72,12 +132,13 @@ const MediaRoom: React.FC = () => {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <Tabs defaultValue="press" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="press">Press Releases</TabsTrigger>
-            <TabsTrigger value="tv">SDP TV</TabsTrigger>
-            <TabsTrigger value="whistleblower">Whistleblower</TabsTrigger>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <Tabs value={activeTab} onValueChange={setTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 gap-2 mb-8 h-auto p-1">
+            <TabsTrigger value="press" className="text-xs sm:text-sm py-2.5">Press</TabsTrigger>
+            <TabsTrigger value="tv" className="text-xs sm:text-sm py-2.5">SDP TV</TabsTrigger>
+            <TabsTrigger value="activities" className="text-xs sm:text-sm py-2.5">Activities</TabsTrigger>
+            <TabsTrigger value="whistleblower" className="text-xs sm:text-sm py-2.5">Whistleblower</TabsTrigger>
           </TabsList>
 
           {/* Press Releases Tab */}
@@ -97,7 +158,9 @@ const MediaRoom: React.FC = () => {
                     <p className="text-sm text-[#1daa62] font-semibold">{release.author}</p>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 mb-4">{release.excerpt}</p>
+                    <p className="text-gray-600 mb-4 whitespace-pre-line">
+                      {release.body ?? release.excerpt}
+                    </p>
                     <div className="flex gap-4">
                       <Button variant="outline" size="sm">Read More</Button>
                       <Button variant="outline" size="sm">
@@ -105,6 +168,45 @@ const MediaRoom: React.FC = () => {
                         Download PDF
                       </Button>
                     </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Activities — full list */}
+          <TabsContent value="activities">
+            <div className="flex items-center gap-3 mb-8">
+              <Newspaper className="w-8 h-8 text-[#1daa62] flex-shrink-0" />
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-sdp-dark">Party activities</h2>
+                <p className="text-sm sm:text-base text-gray-600 mt-1">
+                  Courtesy visits, national engagements, and updates from the SDP National Secretariat.
+                </p>
+              </div>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-6 lg:gap-8">
+              {ACTIVITIES.map((item) => (
+                <Card key={item.id} className="overflow-hidden border border-gray-100 shadow-md hover:shadow-lg transition-shadow">
+                  <div className="relative aspect-[16/10] sm:aspect-[16/9] bg-gray-100">
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="w-full h-full object-cover object-center"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {item.category && (
+                      <span className="absolute bottom-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[#1daa62] rounded-full text-xs font-semibold">
+                        {item.category}
+                      </span>
+                    )}
+                  </div>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg sm:text-xl leading-snug">{item.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.body}</p>
                   </CardContent>
                 </Card>
               ))}

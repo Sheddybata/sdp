@@ -95,8 +95,8 @@ export const PolicyTracker: React.FC = () => {
   
   return (
     <section id="tracker" className="py-10 -mt-8 relative z-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-white rounded-xl shadow-xl p-4 md:p-5 border border-gray-100 transform -translate-y-12">
+      <div className="max-w-7xl mx-auto px-0 sm:px-6">
+        <div className="bg-white rounded-none sm:rounded-xl shadow-xl p-4 md:p-5 border-y sm:border border-gray-100 transform -translate-y-12 mx-0">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-5 gap-3">
             <div className="flex-1 min-w-0">
               <h2 className="text-lg md:text-2xl font-bold text-sdp-dark mb-1 break-words">{t('tracker.title')}</h2>

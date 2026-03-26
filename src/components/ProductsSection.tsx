@@ -61,11 +61,13 @@ export const ProductsSection: React.FC = () => {
     }).format(price);
   };
 
-  const handlePurchase = (product: Product) => {
-    // TODO: Implement purchase flow
-    console.log('Purchase:', product);
-    // You can integrate with a payment gateway or redirect to a purchase page
-    alert(`Purchase ${product.name} for ${formatPrice(product.price)}`);
+  const WHATSAPP_PURCHASE_NUMBER = '2347043979165';
+  const WHATSAPP_PURCHASE_MESSAGE =
+    'Hello, i want to purchase this item, please let me know the payment method and how long it will take to deliver this.';
+
+  const handlePurchase = () => {
+    const url = `https://wa.me/${WHATSAPP_PURCHASE_NUMBER}?text=${encodeURIComponent(WHATSAPP_PURCHASE_MESSAGE)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -140,7 +142,7 @@ export const ProductsSection: React.FC = () => {
 
                 {/* Purchase Button */}
                 <Button
-                  onClick={() => handlePurchase(product)}
+                  onClick={handlePurchase}
                   className="w-full bg-[#ef8636] hover:bg-[#ef8636]/90 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 group/btn"
                 >
                   <ShoppingCart className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />

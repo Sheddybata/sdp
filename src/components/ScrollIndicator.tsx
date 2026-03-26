@@ -10,10 +10,8 @@ interface Section {
 const sections: Section[] = [
   { id: 'hero', label: 'Home', path: '/' },
   { id: 'tracker', label: 'Better Gov', path: '/' },
-  { id: 'wins', label: 'Latest Wins', path: '/' },
-  { id: 'why', label: 'Why SDP', path: '/' },
-  { id: 'testimonials', label: 'Testimonials', path: '/' },
-  { id: 'activity', label: 'Activity', path: '/' }
+  { id: 'activities', label: 'Activities', path: '/' },
+  { id: 'why', label: 'Why SDP', path: '/' }
 ];
 
 const ScrollIndicator: React.FC = () => {

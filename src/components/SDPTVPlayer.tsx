@@ -205,7 +205,7 @@ export const SDPTVPlayer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 bg-slate-50 p-4 rounded-xl shadow-inner">
+    <div className="flex flex-col lg:flex-row gap-4 md:gap-6 bg-slate-50 p-3 sm:p-4 md:p-6 rounded-none md:rounded-xl shadow-inner">
       {/* Main Player Section */}
       <div className="flex-1">
         <div className="aspect-video bg-black rounded-lg overflow-hidden shadow-2xl relative">
@@ -251,34 +251,85 @@ export const SDPTVPlayer: React.FC = () => {
         </div>
       </div>
 
-      {/* Program Guide / Playlist Section */}
-      <div className="w-full lg:w-96 flex flex-col gap-4">
-        <div className="flex items-center gap-2 px-2">
-          <ListVideo className="w-5 h-5 text-sdp-green" />
-          <h3 className="font-bold text-lg text-sdp-dark">Program Guide</h3>
+      {/* Program Guide — horizontal scroll on phone/tablet, vertical on desktop */}
+      <div className="w-full lg:w-96 flex flex-col gap-3 lg:gap-4 min-h-0">
+        <div className="flex items-center gap-2 px-1 lg:px-2 shrink-0">
+          <ListVideo className="w-5 h-5 text-sdp-green flex-shrink-0" />
+          <h3 className="font-bold text-base md:text-lg text-sdp-dark">Program Guide</h3>
           <span className="ml-auto text-xs font-medium text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
             {currentIndex + 1} / {videos.length}
           </span>
         </div>
-        
-        <ScrollArea className="h-[500px] pr-4">
+
+        <div className="lg:hidden -mx-1 px-1 pb-1">
+          <div
+            className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 pt-1 scrollbar-thin [scrollbar-color:rgba(29,170,98,0.5)_transparent]"
+            style={{ WebkitOverflowScrolling: 'touch' }}
+          >
+            {videos.map((video, index) => (
+              <button
+                key={video.id}
+                type="button"
+                onClick={() => handleVideoSelect(index)}
+                className={cn(
+                  'flex flex-col w-[min(100%,280px)] min-w-[240px] max-w-[280px] shrink-0 snap-start rounded-xl transition-all text-left border-2 overflow-hidden',
+                  currentIndex === index
+                    ? 'border-sdp-green bg-white shadow-lg ring-2 ring-sdp-green/20'
+                    : 'border-transparent bg-white/80 hover:border-gray-200'
+                )}
+              >
+                <div className="relative aspect-video w-full bg-gray-200">
+                  <img
+                    src={video.image}
+                    alt=""
+                    loading={index < 4 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/sdp tv/presidency.png';
+                    }}
+                  />
+                  {currentIndex === index && (
+                    <div className="absolute inset-0 bg-sdp-green/35 flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-white uppercase tracking-wide drop-shadow">Playing</span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-2.5 flex flex-col gap-1">
+                  <h4
+                    className={cn(
+                      'text-[11px] font-bold line-clamp-2 leading-tight',
+                      currentIndex === index ? 'text-sdp-green' : 'text-gray-800'
+                    )}
+                  >
+                    {video.title}
+                  </h4>
+                  <span className="text-[10px] text-gray-500">{video.date}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <ScrollArea className="hidden lg:block h-[min(500px,55vh)] pr-3">
           <div className="flex flex-col gap-3">
             {videos.map((video, index) => (
               <button
                 key={video.id}
+                type="button"
                 onClick={() => handleVideoSelect(index)}
                 className={cn(
-                  "flex gap-3 p-2 rounded-lg transition-all text-left hover:bg-white group border border-transparent",
-                  currentIndex === index 
-                    ? "bg-white shadow-md border-sdp-green/20" 
-                    : "hover:border-gray-200"
+                  'flex gap-3 p-2 rounded-lg transition-all text-left hover:bg-white group border border-transparent',
+                  currentIndex === index
+                    ? 'bg-white shadow-md border-sdp-green/20'
+                    : 'hover:border-gray-200'
                 )}
               >
                 <div className="relative flex-shrink-0 w-28 aspect-video rounded-md overflow-hidden bg-gray-200">
-                  <img 
-                    src={video.image} 
-                    alt={video.title} 
-                    loading={index < 4 ? "eager" : "lazy"}
+                  <img
+                    src={video.image}
+                    alt=""
+                    loading={index < 4 ? 'eager' : 'lazy'}
                     decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
@@ -295,22 +346,20 @@ export const SDPTVPlayer: React.FC = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex flex-col justify-between py-1 flex-1 min-w-0">
-                  <h4 className={cn(
-                    "text-xs font-bold line-clamp-2 leading-tight transition-colors",
-                    currentIndex === index ? "text-sdp-green" : "text-gray-800 group-hover:text-sdp-green"
-                  )}>
+                  <h4
+                    className={cn(
+                      'text-xs font-bold line-clamp-2 leading-tight transition-colors',
+                      currentIndex === index ? 'text-sdp-green' : 'text-gray-800 group-hover:text-sdp-green'
+                    )}
+                  >
                     {video.title}
                   </h4>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-[10px] text-gray-500">
-                      {video.date}
-                    </span>
+                    <span className="text-[10px] text-gray-500">{video.date}</span>
                     {currentIndex === index && (
-                      <span className="text-[9px] font-bold text-sdp-green animate-pulse">
-                        NOW PLAYING
-                      </span>
+                      <span className="text-[9px] font-bold text-sdp-green animate-pulse">NOW PLAYING</span>
                     )}
                   </div>
                 </div>

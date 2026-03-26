@@ -80,7 +80,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
           href={item.path}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group whitespace-nowrap"
+          className="text-xs text-[#1daa62] hover:text-[#158a50] transition-all duration-300 font-medium relative group whitespace-nowrap"
         >
           {item.name}
           <span className="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-[#ef8636] scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
         <div key={item.name} className="relative flex-shrink-0">
           <button
             onClick={() => setOpenDropdown(isOpen ? null : item.name)}
-            className={`text-xs text-white hover:text-[#ef8636] transition-all duration-300 font-medium flex items-center gap-0.5 whitespace-nowrap ${
+            className={`text-xs text-[#1daa62] hover:text-[#158a50] transition-all duration-300 font-medium flex items-center gap-0.5 whitespace-nowrap ${
               isActive(item.path) ? 'text-[#ef8636]' : ''
             }`}
           >
@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
             <ChevronDown className={`w-3 h-3 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </button>
           {isOpen && (
-            <div className="absolute top-full left-0 mt-1 py-2 min-w-[200px] bg-sdp-dark border border-white/10 rounded-lg shadow-xl z-50">
+            <div className="absolute top-full left-0 mt-1 py-2 min-w-[200px] bg-white border border-gray-200 rounded-lg shadow-xl z-50">
               {item.children!.map((child) =>
                 child.isExternal ? (
                   <a
@@ -109,7 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                     href={child.path}
                     download={child.download}
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-white hover:text-[#ef8636] hover:bg-white/5 transition"
+                    className="block px-4 py-2.5 text-sm text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8 transition"
                   >
                     {child.name}
                   </a>
@@ -118,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                     key={`${child.name}-${child.path}`}
                     to={child.path}
                     onClick={() => setOpenDropdown(null)}
-                    className="block px-4 py-2.5 text-sm text-white hover:text-[#ef8636] hover:bg-white/5 transition"
+                    className="block px-4 py-2.5 text-sm text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8 transition"
                   >
                     {child.name}
                   </Link>
@@ -134,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
       <Link
         key={`${item.name}-${item.path}`}
         to={item.path}
-        className={`text-xs text-white hover:text-[#ef8636] transition-all duration-300 font-medium relative group flex-shrink-0 whitespace-nowrap ${
+        className={`text-xs text-[#1daa62] hover:text-[#158a50] transition-all duration-300 font-medium relative group flex-shrink-0 whitespace-nowrap ${
           isActive(item.path) ? 'text-[#ef8636]' : ''
         }`}
       >
@@ -158,7 +158,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => setMobileOpen(false)}
-          className="block w-full text-left py-3 px-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5"
+          className="block w-full text-left py-3 px-4 rounded-lg transition text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8"
         >
           {item.name}
         </a>
@@ -168,7 +168,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
     if (hasChildren) {
       return (
         <div key={item.name} className="space-y-1">
-          <div className="py-2 px-4 text-white/80 text-sm font-medium">{item.name}</div>
+          <div className="py-2 px-4 text-[#1daa62] text-sm font-medium">{item.name}</div>
           {item.children!.map((child) =>
             child.isExternal ? (
               <a
@@ -176,7 +176,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                 href={child.path}
                 download={child.download}
                 onClick={() => setMobileOpen(false)}
-                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5 text-sm"
+                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8 text-sm"
               >
                 {child.name}
               </a>
@@ -185,7 +185,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                 key={`${child.name}-${child.path}`}
                 to={child.path}
                 onClick={() => setMobileOpen(false)}
-                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-white hover:text-[#ef8636] hover:bg-white/5 text-sm"
+                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8 text-sm"
               >
                 {child.name}
               </Link>
@@ -203,7 +203,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
         className={`block w-full text-left py-3 px-4 rounded-lg transition ${
           isActive(item.path)
             ? 'text-[#ef8636] font-semibold bg-[#ef8636]/10'
-            : 'text-white hover:text-[#ef8636] hover:bg-white/5'
+            : 'text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8'
         }`}
       >
         {item.name}
@@ -212,31 +212,33 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-sdp-dark/95 backdrop-blur-sm shadow-lg border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-3 md:px-4 py-2 md:py-2.5">
-        <div className="flex items-center justify-between gap-2">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-sm shadow-md border-b border-gray-200/90">
+      <div className="max-w-7xl mx-auto px-3 md:px-4 h-14 flex items-center w-full">
+        <div className="flex items-center justify-between gap-2 w-full min-w-0">
           {/* Left - Nav links (tablet and up: single line) */}
           <div className="flex items-center min-w-0 flex-1">
             <div ref={navLinksRef} className="hidden md:flex items-center gap-2 lg:gap-3 flex-nowrap whitespace-nowrap overflow-visible py-0.5 -mx-1 px-1">
               {navItems.map((item) => renderLink(item))}
             </div>
             <button
+              type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden flex items-center gap-2 text-white px-3 py-2 hover:bg-white/10 rounded-lg transition font-medium"
+              className="md:hidden flex items-center gap-2 rounded-xl border border-[#1daa62]/25 bg-white px-2.5 py-1.5 text-[#1daa62] shadow-sm transition font-medium hover:bg-[#1daa62]/[0.06] hover:shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1daa62]/40 focus-visible:ring-offset-2"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-[#1daa62]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={mobileOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} />
               </svg>
-              <span className="text-sm font-semibold">Menu</span>
+              <span className="text-sm font-semibold text-[#1daa62]">Menu</span>
             </button>
           </div>
 
-          {/* Right - Language & Donate */}
+          {/* Right - Language & Donate — no outer “card” wrapper (avoids double layer behind controls) */}
           <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             <LanguageSwitcher />
             <button
+              type="button"
               onClick={onDonateClick}
-              className="hidden md:flex px-3 lg:px-4 py-2 bg-[#1daa62] hover:bg-[#1daa62]/90 text-white font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl items-center gap-1.5 text-xs"
+              className="hidden md:flex px-3 lg:px-4 py-2 text-[#1daa62] hover:text-white hover:bg-[#1daa62] font-semibold rounded-lg transition-all transform hover:scale-[1.02] shadow-sm hover:shadow-md items-center gap-1.5 text-xs border border-[#1daa62] bg-white"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -248,14 +250,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden bg-sdp-dark border-t border-white/10 px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
+        <div className="md:hidden border-t border-gray-200 bg-white px-4 py-4 space-y-1 max-h-[80vh] overflow-y-auto">
           {navItems.map((item) => renderMobileLink(item))}
           <button
+            type="button"
             onClick={() => {
               onDonateClick();
               setMobileOpen(false);
             }}
-            className="w-full mt-4 px-6 py-3 bg-[#1daa62] hover:bg-[#1daa62]/90 text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+            className="w-full mt-4 px-6 py-3 border border-[#1daa62] text-[#1daa62] hover:bg-[#1daa62] hover:text-white font-semibold rounded-lg transition flex items-center justify-center gap-2"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

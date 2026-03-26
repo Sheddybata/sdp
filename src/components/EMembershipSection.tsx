@@ -32,7 +32,7 @@ export const EMembershipSection: React.FC = () => {
       <div className="absolute top-0 left-0 w-64 h-64 bg-sdp-green/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-sdp-orange/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           {/* Left Column: Content */}
           <div className="w-full lg:w-1/2 text-left">
@@ -76,24 +76,26 @@ export const EMembershipSection: React.FC = () => {
 
           {/* Right Column: Visual Preview */}
           <div className="w-full lg:w-1/2 relative">
-            <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
+            <div className="relative z-10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white">
             <img 
               src="/emembership.png" 
               alt="SDP E-Membership Portal" 
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover min-h-[200px] sm:min-h-0"
               loading="lazy"
               decoding="async"
             />
-              <div className="absolute inset-0 bg-gradient-to-t from-sdp-dark/60 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-sdp-dark/50 via-sdp-dark/5 to-transparent pointer-events-none"></div>
               
-              {/* Floating Badge Mockup */}
-              <div className="absolute bottom-8 left-8 right-8 p-6 bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border-l-4 border-sdp-orange animate-slide-in">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-sdp-green rounded-full flex items-center justify-center text-white">
-                    <CheckCircle2 className="w-6 h-6" />
+              {/* Floating Badge — glass so the image stays visible */}
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-white/35 bg-white/15 backdrop-blur-md shadow-lg animate-slide-in">
+                <div className="flex items-start sm:items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-sdp-green/90 rounded-full flex items-center justify-center text-white shadow-md flex-shrink-0">
+                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <p className="text-lg font-black text-sdp-dark leading-tight">Generate your membership card within 2 minutes</p>
+                  <div className="min-w-0">
+                    <p className="text-xs sm:text-sm md:text-base font-bold text-white leading-snug drop-shadow-[0_1px_2px_rgba(0,0,0,0.85)]">
+                      Generate your membership card within 2 minutes
+                    </p>
                   </div>
                 </div>
               </div>

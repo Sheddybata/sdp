@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import { ManifestoPrinciplesSection } from '@/components/ManifestoPrinciplesSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Users, Award, FileText, History, Target, Lightbulb, Shield, BookOpen, Factory, GraduationCap, Briefcase, Zap, Home, Hammer, Scale, Users2, Heart, Globe, TrendingUp, Loader2, Sparkles, Calendar, Flag, Rocket, Trophy } from 'lucide-react';
+import { Download, Users, Award, FileText, History, Target, Lightbulb, Shield, BookOpen, Users2, Heart, Globe, TrendingUp, Loader2, Sparkles, Calendar, Flag, Rocket, Trophy } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 // Type for former member
@@ -64,44 +65,6 @@ const MemberCard: React.FC<{ member: FormerMember; imagePath: string }> = ({ mem
 
 const WhoWeAre: React.FC = () => {
   const { t } = useLanguage();
-  const manifestoItems = [
-    {
-      icon: Zap,
-      titleKey: 'energy',
-      imagePath: '/Core Principles/energy.png'
-    },
-    {
-      icon: Home,
-      titleKey: 'rural',
-      imagePath: '/Core Principles/Rural Development.png'
-    },
-    {
-      icon: Factory,
-      titleKey: 'mining',
-      imagePath: '/Core Principles/MiningandPetrochemicals.png'
-    },
-    {
-      icon: Briefcase,
-      titleKey: 'labor',
-      imagePath: '/Core Principles/LaborEmploymentandWages.png'
-    },
-    {
-      icon: GraduationCap,
-      titleKey: 'education',
-      imagePath: '/Core Principles/Education.png'
-    },
-    {
-      icon: Shield,
-      titleKey: 'defense',
-      imagePath: '/Core Principles/Defense.png'
-    },
-    {
-      icon: Scale,
-      titleKey: 'police',
-      imagePath: '/Core Principles/Police.png'
-    }
-  ];
-
   const platformItems = [
     {
       icon: Target,
@@ -448,48 +411,7 @@ const WhoWeAre: React.FC = () => {
       {/* Original Manifesto */}
       <section id="manifesto" className="py-16 bg-gray-50 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="inline-block px-4 py-2 bg-[#ef8636]/10 text-[#ef8636] rounded-full text-sm font-semibold mb-4">
-              {t('who.manifesto.badge')}
-            </span>
-            <h2 className="text-4xl font-bold mb-4 text-sdp-dark">{t('who.manifesto.title')}</h2>
-            <p className="text-lg text-gray-600">{t('who.manifesto.subtitle')}</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {manifestoItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <Card key={index} className="hover:shadow-xl transition-all duration-300 border-0 shadow-lg group overflow-hidden relative">
-                  <img 
-                    src={item.imagePath} 
-                    alt={t(`who.manifesto.${item.titleKey}`)}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/5 p-6">
-                    <div className="w-16 h-16 backdrop-blur-md bg-white/30 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/40">
-                      <Icon className="w-8 h-8 text-white drop-shadow-lg" />
-                    </div>
-                    <h3 className="text-xl text-white font-bold drop-shadow-lg mb-2">{t(`who.manifesto.${item.titleKey}`)}</h3>
-                    <p className="text-white leading-relaxed drop-shadow-lg">{t(`who.manifesto.${item.titleKey}Desc`)}</p>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-          <div className="mt-8 flex justify-center">
-            <a
-              href="/SDP Manifesto 2018.pdf"
-              download="SDP Manifesto 2018.pdf"
-            >
-              <Button className="bg-[#1daa62] hover:bg-[#1daa62]/90">
-                <Download className="w-4 h-4 mr-2" />
-                Download Manifesto (PDF)
-              </Button>
-            </a>
-          </div>
+          <ManifestoPrinciplesSection />
           <div id="abridged-manifesto" className="mt-8 pt-8 border-t border-gray-200 scroll-mt-24">
             <h3 className="text-xl font-bold text-sdp-dark mb-2">Abridged Manifesto</h3>
             <p className="text-gray-600">A shorter summary of our manifesto is available on request from the National Secretariat.</p>

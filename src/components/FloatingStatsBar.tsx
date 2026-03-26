@@ -71,39 +71,39 @@ const FloatingStatsBar: React.FC<FloatingStatsBarProps> = ({
 
   return (
     <>
-      <div id="stats-bar-trigger" className="h-1"></div>
-      <div className="fixed top-[73px] left-0 right-0 z-40 bg-sdp-dark/98 backdrop-blur-md border-b border-white/10 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-2 md:py-3">
-          <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-12 flex-wrap">
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <Users className="w-4 h-4 md:w-5 md:h-5 text-[#ef8636] flex-shrink-0" />
-              <div className="flex flex-col md:flex-row md:items-center">
-                <span className="text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">{formatNumber(animatedMembers)}</span>
-                <span className="text-xs md:text-sm text-white/95 md:ml-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-tight">Members</span>
+      <div id="stats-bar-trigger" className="h-0" aria-hidden />
+      <div className="fixed top-14 left-0 right-0 z-40 bg-[#158a50]/98 backdrop-blur-md border-t border-white/10 shadow-md">
+        <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-6 py-2 md:py-2.5">
+          <div className="flex flex-nowrap items-center justify-between sm:justify-center gap-1 sm:gap-3 md:gap-8 lg:gap-12 w-full min-w-0 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#ef8636] shrink-0" />
+              <div className="flex flex-row items-center gap-0.5 sm:gap-1 whitespace-nowrap">
+                <span className="text-sm sm:text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-none">{formatNumber(animatedMembers)}</span>
+                <span className="text-[10px] sm:text-xs md:text-sm text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-none">Members</span>
               </div>
             </div>
-            <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <MapPin className="w-4 h-4 md:w-5 md:h-5 text-[#1daa62] flex-shrink-0" />
-              <div className="flex flex-col md:flex-row md:items-center">
-                <span className="text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">{states}</span>
-                <span className="text-xs md:text-sm text-white/95 md:ml-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-tight">States + FCT</span>
+            <div className="w-px h-5 sm:h-6 md:h-8 bg-white/20 shrink-0 self-center" aria-hidden />
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
+              <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#1daa62] shrink-0" />
+              <div className="flex flex-row items-center gap-0.5 sm:gap-1 whitespace-nowrap">
+                <span className="text-sm sm:text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-none">{states}</span>
+                <span className="text-[10px] sm:text-xs md:text-sm text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-none">States + FCT</span>
               </div>
             </div>
-            <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <Calendar className="w-4 h-4 md:w-5 md:h-5 text-[#ef8636] flex-shrink-0" />
-              <div className="flex flex-col md:flex-row md:items-center">
-                <span className="text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">{year}</span>
-                <span className="text-xs md:text-sm text-white/95 md:ml-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-tight">Ready</span>
+            <div className="w-px h-5 sm:h-6 md:h-8 bg-white/20 shrink-0 self-center" aria-hidden />
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#ef8636] shrink-0" />
+              <div className="flex flex-row items-center gap-0.5 sm:gap-1 whitespace-nowrap">
+                <span className="text-sm sm:text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-none">{year}</span>
+                <span className="text-[10px] sm:text-xs md:text-sm text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-none">Ready</span>
               </div>
             </div>
-            <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="flex items-center gap-1.5 md:gap-2">
-              <TrendingUp className="w-4 h-4 md:w-5 md:h-5 text-[#1daa62] flex-shrink-0" />
-              <div className="flex flex-col md:flex-row md:items-center">
-                <span className="text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-tight">24/7</span>
-                <span className="text-xs md:text-sm text-white/95 md:ml-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-tight">Active</span>
+            <div className="w-px h-5 sm:h-6 md:h-8 bg-white/20 shrink-0 self-center" aria-hidden />
+            <div className="flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 text-[#1daa62] shrink-0" />
+              <div className="flex flex-row items-center gap-0.5 sm:gap-1 whitespace-nowrap">
+                <span className="text-sm sm:text-lg md:text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] leading-none">24/7</span>
+                <span className="text-[10px] sm:text-xs md:text-sm text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] leading-none">Active</span>
               </div>
             </div>
           </div>

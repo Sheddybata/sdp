@@ -2,26 +2,27 @@ import React, { useMemo, useState } from 'react';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { Hero } from '@/components/Hero';
-import { StatsBar } from '@/components/StatsBar';
 import { JoinModal } from '@/components/JoinModal';
 import { DonateModal } from '@/components/DonateModal';
 import FloatingStatsBar from '@/components/FloatingStatsBar';
-import TestimonialsSection from '@/components/TestimonialsSection';
-import RecentActivity from '@/components/RecentActivity';
 import { PolicyTracker } from '@/components/PolicyTracker';
 import { ElectionCountdown } from '@/components/ElectionCountdown';
 import { FloatingActionButtons } from '@/components/FloatingActionButtons';
 import { EndorsementsSection } from '@/components/EndorsementsSection';
+import { PastMembersSection } from '@/components/PastMembersSection';
 import { ProductsSection } from '@/components/ProductsSection';
 import { SDPTVPlayer } from '@/components/SDPTVPlayer';
 import { EMembershipSection } from '@/components/EMembershipSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search } from 'lucide-react';
+import { Search, ArrowRight, BarChart3 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useMemberCount } from '@/hooks/useMemberCount';
 import { stateChairmen } from '@/data/state-chairmen';
+import { Link } from 'react-router-dom';
+import { ACTIVITIES } from '@/data/activities';
+import { ManifestoPrinciplesSection } from '@/components/ManifestoPrinciplesSection';
 
 // Why Card Component
 const WhyCard: React.FC<{
@@ -40,14 +41,14 @@ const WhyCard: React.FC<{
   const badgeBgClass = isGreen ? 'bg-[#1daa62]' : 'bg-[#ef8636]';
 
   return (
-    <div className={`text-center group cursor-pointer p-8 rounded-2xl bg-white hover:bg-gradient-to-br ${hoverBgClass} hover:to-transparent transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-100 ${hoverBorderClass}`}>
-      <div className="relative mb-6">
-        <div className="relative w-48 h-48 mx-auto mb-4 rounded-2xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
+    <div className={`text-center group cursor-pointer p-4 sm:p-8 rounded-2xl bg-white hover:bg-gradient-to-br ${hoverBgClass} hover:to-transparent transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-100 ${hoverBorderClass}`}>
+      <div className="relative mb-4 sm:mb-6">
+        <div className="relative w-full max-w-[320px] aspect-[4/3] mx-auto mb-4 rounded-2xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300 group-hover:scale-[1.02] bg-gray-50 flex items-center justify-center">
           {imagePath && !imageError ? (
             <img
               src={imagePath}
               alt={title}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              className="w-full h-full object-contain object-center p-2 sm:p-3 group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
               decoding="async"
               onError={() => setImageError(true)}
@@ -69,69 +70,44 @@ const WhyCard: React.FC<{
   );
 };
 
-// Win Card Component
-const WinCard: React.FC<{
+const ActivityCard: React.FC<{
   title: string;
   category: string;
-  categoryColor: string;
-  date: string;
+  image: string;
   description: string;
-}> = ({ title, category, categoryColor, date, description }) => {
+}> = ({ title, category, image, description }) => {
   const [imageError, setImageError] = useState(false);
-  const imagePath = getWinImagePath(title);
-  const isGreen = categoryColor === '[#1daa62]';
-  const fallbackGradient = isGreen
-    ? 'bg-gradient-to-br from-[#1daa62] to-[#1daa62]/80'
-    : 'bg-gradient-to-br from-[#ef8636] to-[#ef8636]/80';
-  const categoryBgClass = isGreen ? 'bg-[#1daa62]/10' : 'bg-[#ef8636]/10';
-  const categoryTextClass = isGreen ? 'text-[#1daa62]' : 'text-[#ef8636]';
-  const hoverTextClass = isGreen ? 'group-hover:text-[#1daa62]' : 'group-hover:text-[#ef8636]';
 
   return (
-    <Card className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg overflow-hidden">
-      <div className="relative h-48 overflow-hidden">
-        {imagePath && !imageError ? (
+    <Card className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg overflow-hidden flex flex-col h-full">
+      <div className="relative h-44 sm:h-52 shrink-0 overflow-hidden bg-gray-100">
+        {!imageError ? (
           <img
-            src={imagePath}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            src={image}
+            alt=""
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
             decoding="async"
             onError={() => setImageError(true)}
           />
         ) : (
-          <div className={`w-full h-full ${fallbackGradient}`}>
-            <div className="absolute inset-0 bg-black/10"></div>
-          </div>
+          <div className="w-full h-full bg-gradient-to-br from-[#1daa62]/30 to-[#ef8636]/30" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-        <div className="absolute top-4 right-4 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-          <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute bottom-3 left-3 right-3">
+          <span className="inline-block px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[#1daa62] rounded-full text-[10px] sm:text-xs font-semibold shadow-sm">
+            {category}
+          </span>
         </div>
       </div>
-      <CardContent className="p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <span className={`px-3 py-1 ${categoryBgClass} ${categoryTextClass} rounded-full text-xs font-semibold`}>{category}</span>
-          <span className="text-xs text-gray-500">{date}</span>
-        </div>
-        <h3 className={`text-xl font-bold mb-3 text-sdp-dark ${hoverTextClass} transition-colors`}>{title}</h3>
-        <p className="text-gray-600 leading-relaxed">{description}</p>
+      <CardContent className="p-4 sm:p-6 flex flex-col flex-1">
+        <h3 className="text-base sm:text-lg font-bold mb-2 text-sdp-dark group-hover:text-[#ef8636] transition-colors leading-snug line-clamp-3">
+          {title}
+        </h3>
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-5 sm:line-clamp-6 flex-1">{description}</p>
       </CardContent>
     </Card>
   );
-};
-
-// Helper function to get image path from card title
-const getWinImagePath = (title: string): string => {
-  const imageMap: { [key: string]: string } = {
-    'Senator Wadada Moves Motion': 'SenatorWadadaMovesMotion.jpg',
-    'SDP Nasarawa Distributes Fertilizer': 'SDPNasarawaDistributesFertilizer.jpeg',
-    'Party Chairman Visits IDP Camp': 'PartyChairmanVisitsIDPCamp.jpg'
-  };
-  const filename = imageMap[title];
-  return filename ? `/Latest wins/${filename}` : '';
 };
 
 const HomePage: React.FC = () => {
@@ -164,11 +140,7 @@ const HomePage: React.FC = () => {
       />
       
       <FloatingStatsBar members={memberCount} states={36} year={2027} />
-      <FloatingActionButtons
-        onJoinClick={() => setJoinOpen(true)}
-        onDonateClick={() => setDonateOpen(true)}
-        onVolunteerClick={() => setJoinOpen(true)}
-      />
+      <FloatingActionButtons />
       
       {/* Hero Section */}
       <section id="hero">
@@ -179,19 +151,21 @@ const HomePage: React.FC = () => {
         />
       </section>
 
-      {/* How Better Government - Compact CTA then full section */}
-      <section className="py-8 md:py-10 bg-gradient-to-r from-white via-[#1daa62]/5 to-[#ef8636]/5 border-y border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div>
-            <h2 className="text-xl md:text-2xl font-bold text-sdp-dark mb-1">{t('tracker.title')}</h2>
-            <p className="text-sm md:text-base text-gray-600">{t('tracker.subtitle')}</p>
+      {/* How Better Government — intro card (metrics follow in PolicyTracker) */}
+      <section className="py-6 sm:py-8 md:py-10 bg-gradient-to-br from-[#1daa62]/10 via-white to-[#ef8636]/8 border-y border-gray-100/90 px-0 sm:px-4 md:px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="rounded-2xl border border-gray-200/90 bg-white/95 shadow-md p-5 sm:p-6 md:p-8 flex flex-col sm:flex-row gap-5 sm:gap-6 md:items-start">
+            <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#1daa62]/12 flex items-center justify-center border border-[#1daa62]/25">
+              <BarChart3 className="w-7 h-7 text-[#1daa62]" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-sdp-dark mb-2">{t('tracker.title')}</h2>
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{t('tracker.subtitle')}</p>
+              <p className="mt-3 text-sm text-gray-600 leading-relaxed border-l-2 border-[#ef8636] pl-3">
+                {t('tracker.lead')}
+              </p>
+            </div>
           </div>
-          <Button
-            onClick={() => document.getElementById('tracker')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            className="bg-[#ef8636] hover:bg-[#ef8636]/90 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all shrink-0 border-0"
-          >
-            {t('tracker.button')} →
-          </Button>
         </div>
       </section>
       <PolicyTracker />
@@ -204,18 +178,18 @@ const HomePage: React.FC = () => {
       */}
 
       {/* SDP TV Section */}
-      <section id="sdp-tv" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+      <section id="sdp-tv" className="py-16 md:py-24 bg-white px-0 sm:px-4 md:px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 md:mb-16">
             <span className="inline-block px-4 py-2 bg-sdp-green/10 text-sdp-green rounded-full text-sm font-semibold mb-4">
               {t('sdptv.badge')}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-sdp-dark">{t('sdptv.title')}</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 text-sdp-dark">{t('sdptv.title')}</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-0">
               {t('sdptv.subtitle')}
             </p>
           </div>
-          <div className="bg-gray-50 p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100">
+          <div className="bg-gray-50 p-3 sm:p-6 md:p-10 rounded-none sm:rounded-2xl md:rounded-[2.5rem] shadow-xl border-y sm:border border-gray-100 -mx-0 sm:mx-0">
             <SDPTVPlayer />
           </div>
         </div>
@@ -224,40 +198,36 @@ const HomePage: React.FC = () => {
       {/* E-Membership Section */}
       <EMembershipSection />
 
-      {/* Latest Wins - 3 Column Grid */}
-      <section id="wins" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+      {/* Activities */}
+      <section id="activities" className="py-16 md:py-20 bg-gray-50 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10 md:mb-14">
             <span className="inline-block px-4 py-2 bg-[#1daa62]/10 text-[#1daa62] rounded-full text-sm font-semibold mb-4">
               {t('wins.achievements')}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-sdp-dark">{t('wins.title')}</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4 text-sdp-dark">{t('wins.title')}</h2>
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               {t('wins.subtitle')}
             </p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <WinCard
-              title={t('wins.win1.title')}
-              category={t('wins.category.legislative')}
-              categoryColor="[#ef8636]"
-              date={`2 ${t('wins.date.daysAgo')}`}
-              description={t('wins.win1.desc')}
-            />
-            <WinCard
-              title={t('wins.win2.title')}
-              category={t('wins.category.agriculture')}
-              categoryColor="[#1daa62]"
-              date={`5 ${t('wins.date.daysAgo')}`}
-              description={t('wins.win2.desc')}
-            />
-            <WinCard
-              title={t('wins.win3.title')}
-              category={t('wins.category.humanitarian')}
-              categoryColor="[#ef8636]"
-              date={`1 ${t('wins.date.weekAgo')}`}
-              description={t('wins.win3.desc')}
-            />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {ACTIVITIES.slice(0, 3).map((item) => (
+              <ActivityCard
+                key={item.id}
+                title={item.title}
+                category={item.category ?? t('wins.categoryDefault')}
+                image={item.image}
+                description={item.body}
+              />
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center">
+            <Button asChild className="w-full sm:w-auto min-w-[200px] bg-[#1daa62] hover:bg-[#1daa62]/90 text-white rounded-xl px-8">
+              <Link to="/media-room?tab=activities" className="inline-flex items-center justify-center gap-2">
+                {t('wins.viewAll')}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -301,6 +271,13 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/* Core Principles / Original Manifesto */}
+      <section id="manifesto-home" className="py-14 md:py-16 bg-gray-50 scroll-mt-28 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <ManifestoPrinciplesSection />
+        </div>
+      </section>
+
       {/* Products Section */}
       <ProductsSection />
 
@@ -316,6 +293,8 @@ const HomePage: React.FC = () => {
 
       {/* Endorsements Section */}
       <EndorsementsSection />
+
+      <PastMembersSection variant="standalone" />
 
       {/* Footer Pre-Emptive - Find Ward Chairman */}
       <section className="py-20 bg-gradient-to-br from-sdp-dark via-sdp-dark/95 to-sdp-dark text-white relative overflow-hidden">
@@ -390,17 +369,7 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section id="testimonials">
-        <TestimonialsSection />
-      </section>
-
-      {/* Recent Activity */}
-      <section id="activity">
-        <RecentActivity />
-      </section>
-
-      <Footer />
+      <Footer showPastMembers={false} />
       <JoinModal isOpen={joinOpen} onClose={() => setJoinOpen(false)} />
       <DonateModal isOpen={donateOpen} onClose={() => setDonateOpen(false)} />
     </div>
