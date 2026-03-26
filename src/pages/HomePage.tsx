@@ -279,7 +279,7 @@ const HomePage: React.FC = () => {
 
       <PastMembersSection variant="standalone" />
 
-      {/* Footer Pre-Emptive - Find Ward Chairman */}
+      {/* Footer Pre-Emptive - Find State Chairman */}
       <section className="py-20 bg-gradient-to-br from-sdp-dark via-sdp-dark/95 to-sdp-dark text-white relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#ef8636]/10 rounded-full blur-3xl"></div>
