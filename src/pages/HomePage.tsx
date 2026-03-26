@@ -15,7 +15,7 @@ import { SDPTVPlayer } from '@/components/SDPTVPlayer';
 import { EMembershipSection } from '@/components/EMembershipSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowRight, BarChart3 } from 'lucide-react';
+import { Search, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useMemberCount } from '@/hooks/useMemberCount';
@@ -151,23 +151,6 @@ const HomePage: React.FC = () => {
         />
       </section>
 
-      {/* How Better Government — intro card (metrics follow in PolicyTracker) */}
-      <section className="py-6 sm:py-8 md:py-10 bg-gradient-to-br from-[#1daa62]/10 via-white to-[#ef8636]/8 border-y border-gray-100/90 px-0 sm:px-4 md:px-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="rounded-2xl border border-gray-200/90 bg-white/95 shadow-md p-5 sm:p-6 md:p-8 flex flex-col sm:flex-row gap-5 sm:gap-6 md:items-start">
-            <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-[#1daa62]/12 flex items-center justify-center border border-[#1daa62]/25">
-              <BarChart3 className="w-7 h-7 text-[#1daa62]" aria-hidden />
-            </div>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-sdp-dark mb-2">{t('tracker.title')}</h2>
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">{t('tracker.subtitle')}</p>
-              <p className="mt-3 text-sm text-gray-600 leading-relaxed border-l-2 border-[#ef8636] pl-3">
-                {t('tracker.lead')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
       <PolicyTracker />
 
       {/* Presidential Candidate Spotlight - Hidden until after primaries */}

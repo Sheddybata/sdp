@@ -94,16 +94,18 @@ export const PolicyTracker: React.FC = () => {
   const { t } = useLanguage();
   
   return (
-    <section id="tracker" className="py-10 -mt-8 relative z-20">
-      <div className="max-w-7xl mx-auto px-0 sm:px-6">
-        <div className="bg-white rounded-none sm:rounded-xl shadow-xl p-4 md:p-5 border-y sm:border border-gray-100 transform -translate-y-12 mx-0">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-5 gap-3">
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg md:text-2xl font-bold text-sdp-dark mb-1 break-words">{t('tracker.title')}</h2>
-              <p className="text-xs md:text-sm text-gray-600 break-words">{t('tracker.subtitle')}</p>
+    <section id="tracker" className="relative z-20 py-10">
+      <div className="mx-auto max-w-7xl px-0 sm:px-6">
+        <div className="mx-0 rounded-none border-y border-gray-100 bg-white p-4 shadow-xl sm:rounded-xl sm:border md:p-5">
+          <div className="mb-4 flex flex-row flex-wrap items-start justify-between gap-3 md:mb-5 md:items-center">
+            <div className="min-w-0 flex-1 pr-2">
+              <h2 className="mb-1 break-words text-lg font-bold text-sdp-dark md:text-2xl">
+                {t('tracker.title')}
+              </h2>
+              <p className="break-words text-xs text-gray-600 md:text-sm">{t('tracker.subtitle')}</p>
             </div>
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 bg-[#ef8636]/10 rounded-full border border-[#ef8636]/20">
-              <span className="w-1.5 h-1.5 bg-[#ef8636] rounded-full animate-pulse"></span>
+            <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#ef8636]/20 bg-[#ef8636]/10 px-3 py-1.5">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#ef8636]" />
               <span className="text-xs font-medium text-[#ef8636]">{t('tracker.live')}</span>
             </div>
           </div>
