@@ -27,17 +27,9 @@ export function useMemberCount() {
 
     fetchCount();
 
-    // Subscribe to changes to keep count updated in real-time
-    const subscription = supabase
-      .channel('member_count_channel')
-      .on('postgres_changes', { event: '*', table: 'members' }, () => {
-        fetchCount();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
+    // Refresh periodically (avoids Supabase Realtime WebSocket — often blocked by firewalls/ad blockers).
+    const intervalId = window.setInterval(fetchCount, 120_000);
+    return () => window.clearInterval(intervalId);
   }, []);
 
   return { count, loading };

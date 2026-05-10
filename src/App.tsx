@@ -11,6 +11,7 @@ import WhoWeAre from "./pages/WhoWeAre";
 import OurStand from "./pages/OurStand";
 import EMembership from "./pages/EMembership";
 import ElectionCenter from "./pages/ElectionCenter";
+import Primaries2027Notice from "./pages/Primaries2027Notice";
 import MediaRoom from "./pages/MediaRoom";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/our-stand" element={<OurStand />} />
               <Route path="/e-membership" element={<EMembership />} />
               <Route path="/election-center" element={<ElectionCenter />} />
+              <Route path="/elections/2027-primaries" element={<Primaries2027Notice />} />
               <Route path="/media-room" element={<MediaRoom />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />

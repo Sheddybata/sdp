@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { Search, MapPin, Users, Heart } from 'lucide-react';
+import { Search, MapPin, Users, Heart, FileText } from 'lucide-react';
 
 const ElectionCenter: React.FC = () => {
   const [selectedState, setSelectedState] = useState('');
@@ -48,6 +49,24 @@ const ElectionCenter: React.FC = () => {
       />
       <Breadcrumbs />
       
+      <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6">
+        <Link
+          to="/elections/2027-primaries"
+          className="flex flex-col gap-3 rounded-xl border border-[#158a50]/35 bg-[#1daa62]/10 p-4 transition hover:bg-[#1daa62]/15 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div className="flex items-start gap-3 min-w-0">
+            <FileText className="mt-0.5 h-6 w-6 shrink-0 text-[#158a50]" aria-hidden />
+            <div>
+              <p className="font-semibold text-sdp-dark">Official notice: 2027 primaries for nomination</p>
+              <p className="mt-1 text-sm text-gray-600">Publication date <time dateTime="2026-04-29">29 April 2026</time>. Read online or save as PDF.</p>
+            </div>
+          </div>
+          <span className="inline-flex shrink-0 items-center justify-center rounded-lg bg-[#158a50] px-4 py-2.5 text-sm font-semibold text-white shadow-sm">
+            View full notice
+          </span>
+        </Link>
+      </div>
+
       {/* Hero Section */}
       <section className="pt-32 pb-16 text-white relative bg-sdp-dark" style={{ backgroundImage: 'url(/electioncenter.png)', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
         <div className="absolute inset-0 bg-black/40"></div>

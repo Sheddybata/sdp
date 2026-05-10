@@ -11,7 +11,11 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ customItems }) => {
 
   const getBreadcrumbs = () => {
     if (customItems) {
-      return customItems;
+      const first = customItems[0];
+      if (first?.path === '/') {
+        return customItems;
+      }
+      return [{ label: 'Home', path: '/' }, ...customItems];
     }
 
     const pathMap: { [key: string]: string } = {
@@ -19,6 +23,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ customItems }) => {
       '/our-stand': 'Our Stand',
       '/e-membership': 'E-Membership',
       '/election-center': 'Election Center',
+      '/elections/2027-primaries': '2027 Primaries Notice',
       '/media-room': 'Media Room',
       '/contact': 'Contact'
     };

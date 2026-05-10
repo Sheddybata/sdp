@@ -35,6 +35,11 @@ const nationalStructureChildren = [
   { name: 'NW National Zonal Committee', path: '/who-we-are#zonal-nw' },
 ];
 
+const electionChildren = [
+  { name: 'Election Center', path: '/election-center' },
+  { name: '2027 Primaries Notice', path: '/elections/2027-primaries' },
+];
+
 const navItems: NavItem[] = [
   { name: 'Home', path: '/' },
   { name: 'Who We Are', path: '/who-we-are' },
@@ -43,7 +48,7 @@ const navItems: NavItem[] = [
   { name: 'State Chairmen', path: '/contact' },
   { name: 'Our Stand', path: '/our-stand' },
   { name: 'E-Membership', path: 'https://socialdemocraticparty.app', isExternal: true },
-  { name: 'Election', path: '/election-center' },
+  { name: 'Election', path: '/election-center', children: electionChildren },
   { name: 'Media', path: '/media-room' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -67,6 +72,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
   const isActive = (path: string) => {
     if (path.startsWith('/who-we-are#')) return location.pathname === '/who-we-are';
     return location.pathname === path;
+  };
+
+  const routeMatchesNavItem = (item: NavItem): boolean => {
+    if (!item.children?.length) return isActive(item.path);
+    if (location.pathname === item.path) return true;
+    return item.children.some((c) => !c.isExternal && location.pathname === c.path);
   };
 
   const renderLink = (item: NavItem) => {
@@ -94,14 +105,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
           <button
             onClick={() => setOpenDropdown(isOpen ? null : item.name)}
             className={`text-xs text-[#1daa62] hover:text-[#158a50] transition-all duration-300 font-medium flex items-center gap-0.5 whitespace-nowrap ${
-              isActive(item.path) ? 'text-[#ef8636]' : ''
+              routeMatchesNavItem(item) ? 'text-[#ef8636]' : ''
             }`}
           >
             {item.name}
             <ChevronDown className={`w-3 h-3 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
           </button>
           {isOpen && (
-            <div className="absolute top-full left-0 mt-1 py-2 min-w-[200px] bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+            <div className="absolute top-full left-0 mt-1 py-2 min-w-[240px] max-w-[90vw] bg-white border border-gray-200 rounded-lg shadow-xl z-50">
               {item.children!.map((child) =>
                 child.isExternal ? (
                   <a
@@ -185,7 +196,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onDonateClick, activeSection, se
                 key={`${child.name}-${child.path}`}
                 to={child.path}
                 onClick={() => setMobileOpen(false)}
-                className="block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8 text-sm"
+                className={`block w-full text-left py-2.5 pl-8 pr-4 rounded-lg transition text-sm ${
+                  location.pathname === child.path
+                    ? 'text-[#ef8636] font-semibold bg-[#ef8636]/10'
+                    : 'text-[#1daa62] hover:text-[#158a50] hover:bg-[#1daa62]/8'
+                }`}
               >
                 {child.name}
               </Link>

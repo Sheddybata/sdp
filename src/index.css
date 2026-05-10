@@ -359,3 +359,44 @@
 .scroll-animate.slide-right.visible {
   transform: translateX(0);
 }
+
+/*
+ * 2027 Primaries notice — poster JPEG only on this route (print/PDF-friendly).
+ * Scoped with :has(#sdp-primaries-2027-notice).
+ */
+@media print {
+  html:has(#sdp-primaries-2027-notice),
+  html:has(#sdp-primaries-2027-notice) body {
+    height: auto !important;
+    min-height: 0 !important;
+    background: #fff !important;
+  }
+
+  html:has(#sdp-primaries-2027-notice) {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 5mm;
+  }
+
+  html:has(#sdp-primaries-2027-notice) #sdp-primaries-notice-print-sheet.primaries-notice-print-sheet {
+    zoom: unset;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  html:has(#sdp-primaries-2027-notice) #sdp-primaries-notice-poster-img {
+    display: block;
+    width: auto !important;
+    max-width: 100% !important;
+    max-height: calc(297mm - 10mm);
+    margin-left: auto;
+    margin-right: auto;
+    object-fit: contain;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

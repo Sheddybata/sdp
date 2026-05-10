@@ -15,7 +15,7 @@ import { SDPTVPlayer } from '@/components/SDPTVPlayer';
 import { EMembershipSection } from '@/components/EMembershipSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight, ArrowRightCircle, ScrollText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useMemberCount } from '@/hooks/useMemberCount';
@@ -131,6 +131,17 @@ const HomePage: React.FC = () => {
     ));
   }, [chairmanSearch]);
 
+  const primariesPublicationLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      }).format(new Date(Date.UTC(2026, 3, 29))),
+    []
+  );
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar 
@@ -149,6 +160,64 @@ const HomePage: React.FC = () => {
           onDonateClick={() => setDonateOpen(true)}
           supporterCount={memberCount}
         />
+      </section>
+
+      {/* 2027 primaries — official national notice (homepage teaser) */}
+      <section aria-labelledby="primaries-notice-teaser-heading" className="relative overflow-hidden border-b border-gray-100/90 bg-gradient-to-br from-[#158a50]/10 via-white to-[#ef8636]/[0.08] px-4 py-9 sm:px-6 sm:py-11 md:py-12">
+        <div className="pointer-events-none absolute -right-20 top-8 h-48 w-48 rounded-full border-2 border-[#ef8636]/15 sm:top-4 sm:right-10 sm:h-72 sm:w-72" aria-hidden />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-32 w-full bg-gradient-to-t from-white via-transparent to-transparent sm:h-24" aria-hidden />
+        <div className="relative z-10 mx-auto max-w-7xl">
+          <Link
+            to="/elections/2027-primaries"
+            className="group relative block overflow-hidden rounded-3xl border-2 border-[#1daa62]/35 bg-white/95 p-px shadow-xl shadow-[#158a50]/15 outline-none ring-offset-4 transition hover:-translate-y-0.5 hover:border-[#ef8636]/45 hover:bg-white hover:shadow-2xl hover:shadow-[#ef8636]/10 focus-visible:ring-2 focus-visible:ring-[#158a50] focus-visible:ring-offset-2"
+          >
+            <span className="sr-only">Open full primaries notice (print and timetable)</span>
+            <div className="relative rounded-[calc(1.5rem-2px)] bg-gradient-to-br from-white via-white to-[#1daa62]/[0.04] p-6 sm:p-8 md:flex md:flex-row md:items-center md:gap-10 md:p-10">
+              <div
+                className="absolute inset-y-6 left-0 w-1.5 rounded-r-full bg-gradient-to-b from-[#ef8636] via-[#1daa62] to-[#158a50] opacity-95 sm:inset-y-8"
+                aria-hidden
+              />
+              <div className="flex min-w-0 flex-1 flex-col gap-5 pl-4 sm:pl-6 md:gap-6">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[#158a50]/35 bg-[#1daa62]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[#158a50]">
+                    Official notice • National Secretariat
+                  </span>
+                  <span className="flex items-center gap-1.5 text-xs font-medium text-gray-500 sm:text-sm">
+                    <ScrollText className="h-3.5 w-3.5 text-[#ef8636]" aria-hidden />
+                    2027 elections
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-500 sm:text-[13px]" id="pub-label">
+                    Publication date
+                  </p>
+                  <time
+                    dateTime="2026-04-29"
+                    className="mt-1 block text-xl font-bold text-sdp-dark sm:text-2xl md:text-[1.75rem]"
+                    aria-labelledby="pub-label"
+                  >
+                    {primariesPublicationLabel}
+                  </time>
+                </div>
+                <h2
+                  id="primaries-notice-teaser-heading"
+                  className="text-lg font-bold leading-snug tracking-tight text-sdp-dark sm:text-xl md:max-w-3xl md:text-2xl"
+                >
+                  Publication of the primaries for nomination of candidates for the 2027 elections
+                </h2>
+              </div>
+              <div className="mt-6 flex shrink-0 flex-col items-stretch gap-3 border-t border-dashed border-gray-200 pt-6 md:mt-0 md:w-52 md:border-l md:border-t-0 md:pl-8 md:pt-0">
+                <p className="text-center text-sm font-medium leading-snug text-gray-600 md:text-left">
+                  Complete timetable, venues, guidelines, and signatories — print-ready.
+                </p>
+                <span className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-[#158a50] px-5 py-3.5 text-sm font-semibold text-white shadow-md transition group-hover:bg-[#ef8636] md:justify-start">
+                  Click to read more
+                  <ArrowRightCircle className="h-5 w-5 transition group-hover:translate-x-1" aria-hidden />
+                </span>
+              </div>
+            </div>
+          </Link>
+        </div>
       </section>
 
       <PolicyTracker />
