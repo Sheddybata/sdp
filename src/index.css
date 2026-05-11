@@ -361,18 +361,33 @@
 }
 
 /*
- * 2027 Primaries notice — poster JPEG only on this route (print/PDF-friendly).
- * Scoped with :has(#sdp-primaries-2027-notice).
+ * 2027 Primaries notice — poster JPEG (full page or embedded on homepage).
+ * Scoped with :has(.sdp-primaries-notice-print-scope).
  */
 @media print {
-  html:has(#sdp-primaries-2027-notice),
-  html:has(#sdp-primaries-2027-notice) body {
+  /* When the flyer is embedded on the homepage, hide the rest of the document in print. */
+  html:has(.homepage-primaries-anchor) body * {
+    visibility: hidden;
+  }
+  html:has(.homepage-primaries-anchor) .homepage-primaries-anchor,
+  html:has(.homepage-primaries-anchor) .homepage-primaries-anchor * {
+    visibility: visible;
+  }
+  html:has(.homepage-primaries-anchor) .homepage-primaries-anchor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  html:has(.sdp-primaries-notice-print-scope),
+  html:has(.sdp-primaries-notice-print-scope) body {
     height: auto !important;
     min-height: 0 !important;
     background: #fff !important;
   }
 
-  html:has(#sdp-primaries-2027-notice) {
+  html:has(.sdp-primaries-notice-print-scope) {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -382,13 +397,13 @@
     margin: 5mm;
   }
 
-  html:has(#sdp-primaries-2027-notice) #sdp-primaries-notice-print-sheet.primaries-notice-print-sheet {
+  html:has(.sdp-primaries-notice-print-scope) .sdp-primaries-notice-print-sheet.primaries-notice-print-sheet {
     zoom: unset;
     padding: 0 !important;
     max-width: none !important;
   }
 
-  html:has(#sdp-primaries-2027-notice) #sdp-primaries-notice-poster-img {
+  html:has(.sdp-primaries-notice-print-scope) .sdp-primaries-notice-poster-img {
     display: block;
     width: auto !important;
     max-width: 100% !important;
